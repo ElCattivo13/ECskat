@@ -1,0 +1,2 @@
+# ECskat
+a Skat application
