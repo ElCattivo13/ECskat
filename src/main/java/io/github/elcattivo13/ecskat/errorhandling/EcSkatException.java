@@ -2,7 +2,7 @@ package io.github.elcattivo13.ecskat.errorhandling;
 
 
 
-public abstract class EcSkatException extends Exception {
+public class EcSkatException extends Exception {
 
 	private static final long serialVersionUID = 1864579569964531608L;
 	private final Reason reason;
@@ -15,7 +15,7 @@ public abstract class EcSkatException extends Exception {
         return this.reason;
     }
     
-    protected enum Reason {
+    public enum Reason {
         UNKNOWN_PLAYER,
         UNKNOWN_TABLE,
         UNKNOWN_FARBE,
@@ -25,11 +25,13 @@ public abstract class EcSkatException extends Exception {
         TABLE_IS_FULL,
         SPIEL_ALREADY_STARTED,
         KARTE_NOT_ALLOWED,
-        xxx
+        CARD_NOT_PRESENT,
+        INVALID_SKAT_SIZE,
+        NOT_YOUR_TURN,
+        WRONG_ACTION,
+        ILLEGAL_REIZWERT,
+        UNEXPECTED_PLAYER,
+        RAMSCH_UNTER_DRUECKEN_VERBOTEN,
+        HANDSPIEL_NOT_ALLOWED
     }
 }
-
-
-//
-//
-//public class KarteNotAllowedException

@@ -1,16 +1,26 @@
-package io.github.elcattivo13.ecskat.pojo
+package io.github.elcattivo13.ecskat.pojos;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason;
+
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.*;
+
 public class Spiel extends BaseObject {
-    
-    private static final Logger log = LoggerFactory.getLogger(Spiel.class);
+
+	private static final long serialVersionUID = -1699579178249838583L;
+
+	private static final Logger log = LoggerFactory.getLogger(Spiel.class);
     
     private static final List<Integer> reizwerte = Arrays.asList(0, 18, 20, 22, 23, 24, 27, 30, 33, 35, 36, 40, 44, 45, 46, 48, 50, 54, 55, 59, 60, 63, 66, 70, 72, 77, 80, 81, 84, 88, 90, 96, 99, 100);
     
@@ -23,8 +33,8 @@ public class Spiel extends BaseObject {
     private Action naechsteAktion;
     //private Set<AbstractMap.SimpleEntry<Player, Action>> expectedNextActions = new HashSet<>();
     private AbstractMap.SimpleEntry<Player, Integer> aktuellerReizwert = new AbstractMap.SimpleEntry<>(null, 17);
-    private Game spiel;
-    private GameLevel spielLevel;
+    private Game game;
+    private GameLevel gameLevel;
     private Stich aktuellerStich;
     private Stich letzterStich;
     private int sticheGespielt = 0;
@@ -68,19 +78,19 @@ public class Spiel extends BaseObject {
         // TODO notification via WebSocket
     }
     
-    private void checkAction(Player spieler, Action action) throws NotYourTurnException, WrongActionException {
+    private void checkAction(Player spieler, Action action) throws EcSkatException {
         if (!werIstDran.equals(spieler)) {
-            throw new NotYourTurnException();
+            throw new EcSkatException(Reason.NOT_YOUR_TURN);
         }
         if (naechsteAktion != action) {
-            throw new WrongActionException();
+            throw new EcSkatException(WRONG_ACTION);
         }
     }
     
-    public Optional<SpielResult> reizenSagen(Player spieler, int reizwert) {
+    public Optional<SpielResult> reizenSagen(Player spieler, int reizwert) throws EcSkatException {
         checkAction(spieler, Action.REIZEN_SAGEN);
         if (!reizwerte.contains(reizwert)) {
-            throw new IllegalReizwertException();
+            throw new EcSkatException(ILLEGAL_REIZWERT);
         }
         if (reizwert > aktuellerReizwert.getValue()) {
             next((aktuellerReizwert.getKey() != null) ? aktuellerReizwert.getKey() : vorhand, (!spieler.equals(vorhand)) ? Action.REIZEN_HOEREN : Action.SPIEL_ANSAGEN);
@@ -109,58 +119,60 @@ public class Spiel extends BaseObject {
                     werIstDran = vorhand;
                 }
             } else {
-                throw new UnexpectedPlayerException();
+                throw new EcSkatException(UNEXPECTED_PLAYER);
             }
         }
         return Optional.empty();
     }
     
-    public void ramschSkatWeiterreichen(Player spieler, List<Card> karten) {
+    public void ramschSkatWeiterreichen(Player spieler, List<Card> karten) throws EcSkatException {
         checkAction(spieler, Action.RAMSCH_SKAT_WEITERREICHEN);
         if (karten.size() != 2) {
-            throw new EcSkatException();
+            throw new EcSkatException(INVALID_SKAT_SIZE);
         }
-        if (table.getSettings().isRamschUnterDrueckenVerboten() && karten.stream().filter(c -> c.value == Value.UNTER).findAny().isPresent()) {
-            throw new EcSkatException();
+        if (table.getSettings().isRamschUnterDrueckenVerboten() && karten.stream().filter(c -> c.blatt == Blatt.UNTER).findAny().isPresent()) {
+            throw new EcSkatException(RAMSCH_UNTER_DRUECKEN_VERBOTEN);
         }
         
         if (spieler.equals(vorhand)) {
             spieler.skatDruecken(karten, true);
-            mittelhand.receiveCards(karten);
-            next(mittelhand, Action.RAMSCH_SKAT_WEITERREICHEN)
+            mittelhand.receiveCards(true, karten.toArray(new Card[1]));
+            next(mittelhand, Action.RAMSCH_SKAT_WEITERREICHEN);
         } else if (spieler.equals(mittelhand)) {
             spieler.skatDruecken(karten, true);
-            hinterhand.receiveCards(karten);
-            next(hinterhand, Action.RAMSCH_SKAT_WEITERREICHENk);
+            hinterhand.receiveCards(true, karten.toArray(new Card[1]));
+            next(hinterhand, Action.RAMSCH_SKAT_WEITERREICHEN);
         } else if (spieler.equals(hinterhand)) {
-            karten.forEach(spieler::playCard);
+        	for (Card card : karten) {
+				spieler.playCard(card);
+			}
             skat.addAll(karten);
-            next(vorhand. Action.KARTE_SPIELEN;
+            next(vorhand, Action.KARTE_SPIELEN);
         } else {
-            throw new EcSkatException();
+            throw new EcSkatException(UNEXPECTED_PLAYER);
         }
     }
     
-    public void reizenHoeren(Player spieler, boolean ja) {
+    public void reizenHoeren(Player spieler, boolean ja) throws EcSkatException {
         checkAction(spieler, Action.REIZEN_HOEREN);
         if (ja) {
             next(aktuellerReizwert.getKey(), Action.REIZEN_SAGEN);
             aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, aktuellerReizwert.getValue());
         } else {
             // Spieler hat weggesagt
-            next(hinterhand, (aktuellerReizwert.getKey() == mittelhand) ? Action.REIZEN_SAGEN : Action.SPIEL_ANSAGEN;
+            next(hinterhand, (aktuellerReizwert.getKey() == mittelhand) ? Action.REIZEN_SAGEN : Action.SPIEL_ANSAGEN);
         }
     }
     
-    public void skatAufnehmen(Player spieler) {
+    public void skatAufnehmen(Player spieler) throws EcSkatException {
         checkAction(spieler, Action.SPIEL_ANSAGEN);
-        spieler.receiveCards(skat.poll(), skat.poll());
+        spieler.receiveCards(true, skat.poll(), skat.poll());
     }
     
-    public void spielAnsagen(Player spieler, Game spiel, GameLevel gameLevel, List<Card> gedrueckteKarten) {
+    public void spielAnsagen(Player spieler, Game game, GameLevel gameLevel, List<Card> gedrueckteKarten) throws EcSkatException {
         checkAction(spieler, Action.SPIEL_ANSAGEN);
         if (skat.isEmpty() && gameLevel != GameLevel.NORMAL) {
-            throw new HandSpielNotAllowedException();
+            throw new EcSkatException(HANDSPIEL_NOT_ALLOWED);
         }
         this.game = game;
         this.gameLevel = gameLevel;
@@ -231,27 +243,29 @@ public class Spiel extends BaseObject {
         
         Player alleinspieler = aktuellerReizwert.getKey();
         List<Player> gegenspieler = Stream.of(vorhand, mittelhand, hinterhand)
-            .filter(p -> !p.equals(alleinspieler
+            .filter(p -> !p.equals(alleinspieler))
             .collect(Collectors.toList());
-        final int punkteAlleinspieler = .sumPoints();
+        final int punkteAlleinspieler = alleinspieler.sumPoints();
+        log.info("Punkte Alleinspieler: {}", punkteAlleinspieler);
         final int punkteGegenspieler = gegenspieler.stream().mapToInt(Player::sumPoints).sum();
+        log.info("Punkte Gegenspieler: {}", punkteGegenspieler);
         final int faktorVerloren = game.isHandSpiel(gameLevel) ? -1 : -2;
         final boolean schneider = punkteGegenspieler <= 30;
         final boolean schwarz = !gegenspieler.stream()
             .map(Player::isStichErhalten)
             .reduce(false, (a,b) -> a || b);
         final boolean alleinspielerSchneider = punkteAlleinspieler <= 30;
-        final boolean alleinspielerSchwarz = !alleinspieler.isStichErhalten()
+        final boolean alleinspielerSchwarz = !alleinspieler.isStichErhalten();
         
         res.setGespaltenes(punkteAlleinspieler == punkteGegenspieler);
         
         if (game.isNullSpiel()) {
             if (alleinspielerSchwarz) {
-                res.putWertung(alleinspieler, game.grundwert + table.getSettings().getZusatzPunkteGewonnen());
+                res.putWertung(alleinspieler, game.grundwert + zusatzPunkteGewonnen);
                 gegenspieler.forEach(p -> res.putWertung(p, 0));
             } else {
                 res.putWertung(alleinspieler, faktorVerloren * game.grundwert);
-                gegenspieler.forEach(p -> res.putWertung(p, table.getSettings().getZusatzPunkteVerloren()));
+                gegenspieler.forEach(p -> res.putWertung(p, zusatzPunkteVerloren));
             }
         } else {
             // Farbspiele oder Grand
@@ -268,7 +282,7 @@ public class Spiel extends BaseObject {
                     fall++;
                 }
                 res.putWertung(alleinspieler, faktorVerloren * game.grundwert * (alleinspieler.getSpitzen() + fall));
-                gegenspieler.forEach(p -> res.putWertung(p, table.getSettings().getZusatzPunkteVerloren()));
+                gegenspieler.forEach(p -> res.putWertung(p, zusatzPunkteVerloren));
             } else {
                 // gewonnen
                 res.putWertung(alleinspieler, 
@@ -277,7 +291,7 @@ public class Spiel extends BaseObject {
                         gameLevel.gewinnStufe + 
                         (schneider ? 1 : 0) + 
                         (schwarz ? 1 : 0)) + 
-                        table.getSettings().getZusatzPunkteGewonnen());
+                        zusatzPunkteGewonnen);
                 gegenspieler.forEach(p -> res.putWertung(p, 0));
             }
         }

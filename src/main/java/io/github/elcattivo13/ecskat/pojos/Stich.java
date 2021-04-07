@@ -1,10 +1,11 @@
 package io.github.elcattivo13.ecskat.pojos;
 
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.KARTE_NOT_ALLOWED;
+
 import java.util.Comparator;
 import java.util.Optional;
 
-import io.github.elcattivo13.ecskat.errorhandling.KarteNotAllowedException;
-
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 public class Stich {
     private final Game game;
     private final boolean readOnly;
@@ -31,7 +32,7 @@ public class Stich {
         this.readOnly = true;
     }
     
-    public Optional<Stich> cardPlayed(Player spieler, Card card) throws KarteNotAllowedException {
+    public Optional<Stich> cardPlayed(Player spieler, Card card) throws EcSkatException {
         if (readOnly) {
             return Optional.empty();
         }
@@ -61,9 +62,9 @@ public class Stich {
         }
     }
     
-    private void checkCard(Player spieler, Card card) throws KarteNotAllowedException {
+    private void checkCard(Player spieler, Card card) throws EcSkatException {
         if (karte1 != null && !karte1.isGleicheFarbe(card, game) && spieler.hasCardWithSameColor(karte1, game)) {
-            throw new KarteNotAllowedException();
+            throw new EcSkatException(KARTE_NOT_ALLOWED);
         }
     }
     

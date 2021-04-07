@@ -1,10 +1,18 @@
 package io.github.elcattivo13.ecskat.pojos;
 
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.PLAYER_ALREADY_AT_TABLE;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.SPIEL_ALREADY_STARTED;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.TABLE_IS_FULL;
+
 import java.util.List;
 
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+
 public class Table extends BaseObject {
-    
-    private final String name;
+
+	private static final long serialVersionUID = 6060804946738803L;
+	
+	private final String name;
     private final TableSettings settings;
     private List<Player> spieler;
     private int indexGeber = 0;
@@ -18,23 +26,23 @@ public class Table extends BaseObject {
     public Table(String name, TableSettings settings) {
         super();
         this.name = name;
-        thus.settings = settings;
+        this.settings = settings;
     }
     
     public void addPlayer(Player player) throws EcSkatException {
         if (spieler.size() >= 4 || (!settings.isZuViertOk() && spieler.size() >= 3)) {
-            throw new TableIsFullException();
+            throw new EcSkatException(TABLE_IS_FULL);
         } else if (spieler.contains(player)) {
-            throw new PlayerAlreadyAtTableException();
+            throw new EcSkatException(PLAYER_ALREADY_AT_TABLE);
         } else if (spielStarted) {
-            throw new SpielAlreadyStartedException();
+            throw new EcSkatException(SPIEL_ALREADY_STARTED);
         } else {
-            players.add(player);
+            spieler.add(player);
         }
     }
     
     public void removePlayer(Player player) {
-        players.remove(player);
+        spieler.remove(player);
     }
     
     public void startNextSpiel() {
