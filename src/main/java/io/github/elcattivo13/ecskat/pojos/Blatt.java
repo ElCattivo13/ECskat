@@ -1,6 +1,8 @@
 package io.github.elcattivo13.ecskat.pojos;
 
-import io.github.elcattivo13.ecskat.errorhandling.UnknownBlattException;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.UNKNOWN_BLATT;
+
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 
 enum Blatt {
     SIEBEN(1,1,0),
@@ -25,11 +27,11 @@ enum Blatt {
         return game.isNullSpiel() ? nullRang : rang;
     }
     
-    public static Blatt of(String blatt) throws UnknownBlattException {
+    public static Blatt of(String blatt) throws EcSkatException {
         try {
             return Blatt.valueOf(blatt);
         } catch(IllegalArgumentException e) {
-            throw new UnknownBlattException();
+            throw new EcSkatException(UNKNOWN_BLATT);
         }
     }
 }

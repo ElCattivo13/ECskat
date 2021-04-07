@@ -1,10 +1,21 @@
 package io.github.elcattivo13.ecskat.pojos;
 
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.CARD_NOT_PRESENT;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.INVALID_SKAT_SIZE;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason;
 
 public class Player extends BaseObject {
-    private String name;
+
+	private static final long serialVersionUID = 2619678530876426782L;
+	
+	private String name;
     private boolean playing = true;
     private List<Card> cards = new ArrayList<>();
     private List<Card> gewonneneStiche = new ArrayList<>();
@@ -35,9 +46,9 @@ public class Player extends BaseObject {
         }
     }
     
-    public void playCard(Card card) {
+    public void playCard(Card card) throws EcSkatException {
         if (!this.cards.remove(card)) {
-            throw new CardNotPresentException();
+            throw new EcSkatException(CARD_NOT_PRESENT);
         }
         
     }
@@ -53,15 +64,21 @@ public class Player extends BaseObject {
     public void receiveStich(Stich stich, Game game) {
         gewonneneStiche.add(stich.getKarte1());
         gewonneneStiche.add(stich.getKarte2());
-        gewonneneStiche.and(stich.getKarte3());
+        gewonneneStiche.add(stich.getKarte3());
         this.stichErhalten = true;
     }
     
-    public void skatDruecken(List<Card> cards, boolean ramschSkatWeiterreichen) {
+    public void skatDruecken(List<Card> cards) throws EcSkatException {
+    	skatDruecken(cards, false);
+    }
+    
+    public void skatDruecken(List<Card> cards, boolean ramschSkatWeiterreichen) throws EcSkatException {
         if (!cards.isEmpty() && cards.size() != 2) {
-            throw new SkatDrueckenException();
+            throw new EcSkatException(INVALID_SKAT_SIZE);
         }
-        cards.forEach(this::playCard);
+        for (Card card : cards) {
+			playCard(card);
+		}
         if (!ramschSkatWeiterreichen) {
             gewonneneStiche.addAll(cards);
         }
@@ -78,7 +95,6 @@ public class Player extends BaseObject {
         List<Integer> eigeneTruempfe = cards.stream()
             .filter(card -> card.isTrumpf(game))
             .map(alleTruempfe::indexOf)
-
             .sorted()
             .collect(Collectors.toList());
         if (!eigeneTruempfe.contains(0)) {
@@ -87,7 +103,7 @@ public class Player extends BaseObject {
             spitzen = IntStream.range(0,11)
                 .filter(i -> !eigeneTruempfe.contains(i))
                 .findFirst()
-                .orElse();
+                .orElse(11);
         }
         
     }
@@ -113,7 +129,7 @@ public class Player extends BaseObject {
         this.cutPosition = cutPosition;
     }
     
-    public cutPosition getCutPosition(){
+    public CutPosition getCutPosition(){
         return this.cutPosition;
     }
     
