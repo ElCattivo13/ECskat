@@ -1,4 +1,5 @@
-import io.github.elcattivo13.pojos.Player;
+
+
 
 @Path("player")
 @RequestScoped
@@ -36,5 +37,26 @@ public class PlayerResource {
         }
     }
     
+    @PUT
+    @Path("/ready")
+    public PlayerResponse ready(@CookieParam(USER_ID) Strig userId) {
+        try {
+            playerBean.toggleReady(userId, true);
+            return PlayerResponse.ok();
+        } catch(UnknownPlayerException e) {
+            return PlayerResponse.fail(e);
+        }
+        
+    }
     
+    @PUT
+    @Path("/notready")
+    public PlayerResponse notReady(@CookieParam(USER_ID) String userId) {
+        try {
+            playerBean.toggleReady(userId, false);
+            return PlayerResponse.ok();
+        } catch(UnknownPlayerException e) {
+            return PlayerResponse.fail(e);
+        }
+    }
 }

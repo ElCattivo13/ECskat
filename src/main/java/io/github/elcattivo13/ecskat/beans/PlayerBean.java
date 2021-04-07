@@ -1,4 +1,6 @@
-import io.github.elcattivo13.pojos.Player;
+package io.github.elcattivo13.ecskat.beans;
+
+
 
 @Stateless
 public class PlayerBean {
@@ -18,5 +20,9 @@ public class PlayerBean {
     
     public Player findPlayer(String playerId) throws UnknownPlayerException {
         return playerCache.findPlayer(playerId);
+    }
+    
+    public void toggleReady(String playerId, boolean ready) throws UnknownPlayerException {
+        findPlayer(playerId).setReady(ready);
     }
 }
