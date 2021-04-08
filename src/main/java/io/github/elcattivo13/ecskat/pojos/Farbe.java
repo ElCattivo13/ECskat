@@ -4,7 +4,7 @@ import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 
-enum Farbe { 
+public enum Farbe { 
     EICHEL(12),
     GRUEN(11),
     HERZ(10),

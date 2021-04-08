@@ -1,4 +1,9 @@
-import io.github.elcattivo13.pojos.Table;
+package io.github.elcattivo13.ecskat.boundary;
+
+import java.util.List;
+
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.Table;
 
 public class TableResponse {
     private final String status;
@@ -20,8 +25,12 @@ public class TableResponse {
         return this.tables;
     }
         
-    public TableRespone setTables(List<Table> tables){
+    public TableResponse setTables(List<Table> tables){
         this.tables = tables;
         return this;
     }
+
+	public String getStatus() {
+		return status;
+	}
 }

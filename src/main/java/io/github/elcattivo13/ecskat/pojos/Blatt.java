@@ -4,7 +4,7 @@ import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 
-enum Blatt {
+public enum Blatt {
     SIEBEN(1,1,0),
     ACHT(2,2,0),
     NEUN(3,3,0),

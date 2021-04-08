@@ -1,4 +1,14 @@
-import io.github.elcattivo13.pojos.Player;
+package io.github.elcattivo13.ecskat.boundary;
+
+import java.util.List;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.Player;
 
 public class PlayerResponse {
     private final String status;
@@ -44,5 +54,9 @@ public class PlayerResponse {
         this.players = players;
         return this;
     }
+
+	public String getStatus() {
+		return status;
+	}
     
 }

@@ -1,8 +1,13 @@
 package io.github.elcattivo13.ecskat.beans;
 
+import java.util.List;
 
+import javax.inject.Inject;
 
-@Stateless
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.Player;
+
+// @Stateless TODO welche Annotation in Quarkus? @RequestScoped
 public class PlayerBean {
     
     @Inject
@@ -18,11 +23,11 @@ public class PlayerBean {
         return playerCache.findAllPlayers();
     }
     
-    public Player findPlayer(String playerId) throws UnknownPlayerException {
+    public Player findPlayer(String playerId) throws EcSkatException {
         return playerCache.findPlayer(playerId);
     }
     
-    public void toggleReady(String playerId, boolean ready) throws UnknownPlayerException {
+    public void toggleReady(String playerId, boolean ready) throws EcSkatException {
         findPlayer(playerId).setReady(ready);
     }
 }

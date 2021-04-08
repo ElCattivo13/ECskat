@@ -1,6 +1,24 @@
+package io.github.elcattivo13.ecskat.beans;
 
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.PLAYER_NOT_AT_TABLE;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.SPIEL_ALREADY_STARTED;
 
-@Stateless
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.Blatt;
+import io.github.elcattivo13.ecskat.pojos.Card;
+import io.github.elcattivo13.ecskat.pojos.Farbe;
+import io.github.elcattivo13.ecskat.pojos.Player;
+import io.github.elcattivo13.ecskat.pojos.Spiel;
+import io.github.elcattivo13.ecskat.pojos.SpielResult;
+import io.github.elcattivo13.ecskat.pojos.Table;
+import io.github.elcattivo13.ecskat.pojos.TableSettings;
+
+//@Stateless TODO welche Annotation in Quarkus? @RequestScoped
 public class TableBean {
     
     @Inject
@@ -9,7 +27,7 @@ public class TableBean {
     @Inject 
     private PlayerCache playerCache;
     
-    public String createTable(String name, String creatorId, TableSettings settings) throws UnknownPlayerException {
+    public String createTable(String name, String creatorId, TableSettings settings) throws EcSkatException {
         Table table;
         if (settings == null) {
             table = new Table(name);
@@ -30,10 +48,10 @@ public class TableBean {
     }
     
     
-    public xxx playCard(String playerId, String tableId, String blatt, String farbe) throws EcSkatException {
+    public void playCard(String playerId, String tableId, String blatt, String farbe) throws EcSkatException {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         Card karte = new Card(Farbe.of(farbe), Blatt.of(blatt));
-        Optional<SpielResult> res = pts.spiel.karteSpielen(pts.spieler, karte);
+        Optional<SpielResult> res = pts.spiel.karteSpielen(pts.player, karte);
         
         // TODO was tun mit dem SpielResult
         
@@ -41,7 +59,7 @@ public class TableBean {
     
     public void austeilen(String playerId, String tableId) throws EcSkatException {
         PlayerTable pt = findPojosWithoutSpiel(playerId, tableId);
-        pt.table.startNextGame(pt.player);
+        pt.table.startNextSpiel();
     }
     
     public void sagen(String playerId, String tableId, Integer reizwert) throws EcSkatException {
@@ -54,10 +72,10 @@ public class TableBean {
     
     public void hoeren(String playerId, String tableId, boolean ja) throws EcSkatException {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
-        ptsspiel.reizenHoeren(pts.player, ja);
+        pts.spiel.reizenHoeren(pts.player, ja);
     }
     
-    public void skatAufnehmen(Sting playerId, String tableId) throws EcSkatException {
+    public void skatAufnehmen(String playerId, String tableId) throws EcSkatException {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         pts.spiel.skatAufnehmen(pts.player);
     }
@@ -81,34 +99,31 @@ public class TableBean {
         return res;
     }
     
-    private Table findTable(String tableId) throws UnknownTableException {
-        if (tableId == null) {
-            throw new UnknownTableException();
-        }
-        return this.tableCache.getTable(tableId).orElseThrow(UnknownTableException::new);
+    private Table findTable(String tableId) throws EcSkatException {
+        return this.tableCache.findTable(tableId);
     }
     
-    private Player findPlayer(String playerId) throws UnknownPlayerException {
-        rwturn playerCache.findPlayer(playerId);
+    private Player findPlayer(String playerId) throws EcSkatException {
+        return playerCache.findPlayer(playerId);
     }
     
-    private void checkPlayerAtTable(PlayerTable pt) throws PlayerNotAtTableExceptionb {
+    private void checkPlayerAtTable(PlayerTable pt) throws EcSkatException {
         if (!pt.table.getSpieler().contains(pt.player)) {
-            throw new PlayerNotAtTableException();
+            throw new EcSkatException(PLAYER_NOT_AT_TABLE);
         }
     }
     
-    private Spiel findSpiel(Table t) {
+    private Spiel findSpiel(Table t) throws EcSkatException {
         if (t.getSpiel() == null) {
-            throw new SpielNotStartedException();
+            throw new EcSkatException(SPIEL_ALREADY_STARTED);
         } else {
             return t.getSpiel();
         }
     }
     
     private static class PlayerTable {
-        private Player player;
-        private Table table;
+        public Player player;
+        public Table table;
         
         public PlayerTable() {}
         
@@ -119,7 +134,7 @@ public class TableBean {
     }
     
     private static class PlayerTableSpiel extends PlayerTable {
-        private Spiel spiel;
+        public Spiel spiel;
         
         public PlayerTableSpiel(PlayerTable pt) {
             super(pt);

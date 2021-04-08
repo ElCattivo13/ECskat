@@ -1,5 +1,20 @@
+package io.github.elcattivo13.ecskat.boundary;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+import io.github.elcattivo13.ecskat.beans.TableBean;
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.TableSettings;
 
 @Path("table")
 @RequestScoped
@@ -25,7 +40,7 @@ public class TableResource {
     
     @PUT
     @Path("join/{tableId}")
-    public TableResponse joinTable(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam String tableId) {
+    public TableResponse joinTable(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
         try {
             tableBean.joinTable(userId, tableId);
             return TableResponse.ok();
@@ -38,11 +53,11 @@ public class TableResource {
     @POST
     @Path("create/{name}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public TableResponse createTable(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam String name, TableSettings settings) {
+    public TableResponse createTable(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("name") String name, TableSettings settings) {
         try {
             tableBean.createTable(name, userId, settings);
             return TableResponse.ok();
-        } catch (UnknownPlayerException e) {
+        } catch (EcSkatException e) {
             return TableResponse.fail(e);
         }
     }
@@ -52,7 +67,7 @@ public class TableResource {
     public TableResponse startGame(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
         try {
             tableBean.austeilen(userId, tableId);
-            return tableBean.ok();
+            return TableResponse.ok();
         } catch(EcSkatException e) {
             return TableResponse.fail(e);
         }
@@ -77,7 +92,7 @@ public class TableResource {
     
     @PUT
     @Path("hoeren/{tableId}/no")
-    public TableResponse hoerenJa(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
+    public TableResponse hoerenWeg(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
         return hoeren(userId, tableId, false);
     }
     
@@ -97,7 +112,7 @@ public class TableResource {
             tableBean.skatAufnehmen(userId, tableId);
             return TableResponse.ok();
         } catch(EcSkatException e) {
-            return TableResource.fail(e);
+            return TableResponse.fail(e);
         }
     }
     

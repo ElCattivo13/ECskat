@@ -1,5 +1,21 @@
+package io.github.elcattivo13.ecskat.boundary;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
 
+import io.github.elcattivo13.ecskat.beans.PlayerBean;
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.Player;
 
 @Path("player")
 @RequestScoped
@@ -21,29 +37,29 @@ public class PlayerResource {
     
     @PUT
     @Path("/{name}")
-    public Response createOrUpdatePlayer(@CookieParam(USER_ID) Cookie userId, @PathParam String name) {
-        if (cookie == null) {
+    public Response createOrUpdatePlayer(@CookieParam(USER_ID) Cookie userIdCookie, @PathParam("name") String name) {
+        if (userIdCookie == null) {
             String playerId = playerBean.createPlayer(name);
             return PlayerResponse.ok().toResponse(new NewCookie(USER_ID, playerId));
         } else {
             try {
-                Player player = playerBean.findPlayer(cookie.getValue());
+                Player player = playerBean.findPlayer(userIdCookie.getValue());
                 player.setName(name);
                 // TODO broadcast changes via websocket
-                return PlayerResponse..ok().toResponse();
-            } catch(UnknownPlayerException e) {
-                return PlayerResponse.fail(e).toResponse(new NewCookie(cookie, null, 0, false));
+                return PlayerResponse.ok().toResponse();
+            } catch(EcSkatException e) {
+                return PlayerResponse.fail(e).toResponse(new NewCookie(userIdCookie, null, 0, false));
             }
         }
     }
     
     @PUT
     @Path("/ready")
-    public PlayerResponse ready(@CookieParam(USER_ID) Strig userId) {
+    public PlayerResponse ready(@CookieParam(USER_ID) String userId) {
         try {
             playerBean.toggleReady(userId, true);
             return PlayerResponse.ok();
-        } catch(UnknownPlayerException e) {
+        } catch(EcSkatException e) {
             return PlayerResponse.fail(e);
         }
         
@@ -55,7 +71,7 @@ public class PlayerResource {
         try {
             playerBean.toggleReady(userId, false);
             return PlayerResponse.ok();
-        } catch(UnknownPlayerException e) {
+        } catch(EcSkatException e) {
             return PlayerResponse.fail(e);
         }
     }

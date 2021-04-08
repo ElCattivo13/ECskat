@@ -140,4 +140,14 @@ public class Player extends BaseObject {
     public void setName(String name){
         this.name = name;
     }
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+    
+    
 }
