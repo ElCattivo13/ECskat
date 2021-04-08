@@ -10,6 +10,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import io.github.elcattivo13.ecskat.beans.TableBean;
@@ -22,7 +23,7 @@ import io.github.elcattivo13.ecskat.pojos.TableSettings;
 public class TableResource {
     
     @Inject
-    private TableBean tableBean;
+    TableBean tableBean;
     
     // PUT -> create or replace singular resource
     // POST -> add resource to collection
@@ -39,8 +40,8 @@ public class TableResource {
     
     
     @PUT
-    @Path("join/{tableId}")
-    public TableResponse joinTable(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
+    @Path("join")
+    public TableResponse joinTable(@CookieParam(PlayerResource.USER_ID) String userId, @QueryParam("tableId") String tableId) {
         try {
             tableBean.joinTable(userId, tableId);
             return TableResponse.ok();
@@ -55,16 +56,16 @@ public class TableResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public TableResponse createTable(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("name") String name, TableSettings settings) {
         try {
-            tableBean.createTable(name, userId, settings);
-            return TableResponse.ok();
+            String tableId = tableBean.createTable(name, userId, settings);
+            return TableResponse.ok().setTableId(tableId);
         } catch (EcSkatException e) {
             return TableResponse.fail(e);
         }
     }
     
     @PUT
-    @Path("startGame/{tableId}")
-    public TableResponse startGame(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
+    @Path("startGame")
+    public TableResponse startGame(@CookieParam(PlayerResource.USER_ID) String userId, @QueryParam("tableId") String tableId) {
         try {
             tableBean.austeilen(userId, tableId);
             return TableResponse.ok();

@@ -8,6 +8,7 @@ import io.github.elcattivo13.ecskat.pojos.Table;
 public class TableResponse {
     private final String status;
     private List<Table> tables;
+    private String tableId;
     
     private TableResponse(String status) {
         this.status = status;
@@ -33,4 +34,15 @@ public class TableResponse {
 	public String getStatus() {
 		return status;
 	}
+
+	public String getTableId() {
+		return tableId;
+	}
+
+	public TableResponse setTableId(String tableId) {
+		this.tableId = tableId;
+		return this;
+	}
+	
+	
 }

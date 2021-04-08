@@ -6,7 +6,11 @@ import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 import io.github.elcattivo13.ecskat.pojos.Blatt;
@@ -18,17 +22,20 @@ import io.github.elcattivo13.ecskat.pojos.SpielResult;
 import io.github.elcattivo13.ecskat.pojos.Table;
 import io.github.elcattivo13.ecskat.pojos.TableSettings;
 
-//@Stateless TODO welche Annotation in Quarkus? @RequestScoped
+@RequestScoped //@Stateless TODO welche Annotation in Quarkus? @RequestScoped
 public class TableBean {
     
+	private static final Logger log = LoggerFactory.getLogger(TableBean.class);
+	
     @Inject
-    private TableCache tableCache;
+    TableCache tableCache;
     
     @Inject 
-    private PlayerCache playerCache;
+    PlayerCache playerCache;
     
     public String createTable(String name, String creatorId, TableSettings settings) throws EcSkatException {
         Table table;
+        log.info("Name: {}, creatorId: {}, settings: {}", name, creatorId, settings);
         if (settings == null) {
             table = new Table(name);
         } else {
@@ -59,7 +66,7 @@ public class TableBean {
     
     public void austeilen(String playerId, String tableId) throws EcSkatException {
         PlayerTable pt = findPojosWithoutSpiel(playerId, tableId);
-        pt.table.startNextSpiel();
+        pt.table.startNextSpiel(pt.player);
     }
     
     public void sagen(String playerId, String tableId, Integer reizwert) throws EcSkatException {

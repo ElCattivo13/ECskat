@@ -23,6 +23,7 @@ public class EcSkatException extends Exception {
         PLAYER_NOT_AT_TABLE,
         PLAYER_ALREADY_AT_TABLE,
         TABLE_IS_FULL,
+        NOT_ENOUGH_PLAYER_AT_TABLE,
         SPIEL_ALREADY_STARTED,
         KARTE_NOT_ALLOWED,
         CARD_NOT_PRESENT,

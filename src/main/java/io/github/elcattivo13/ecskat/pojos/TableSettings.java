@@ -10,9 +10,7 @@ public class TableSettings{
     private int zusatzPunkteVerloren = 40;
     private boolean ramschSkatWeiterreichen;
     private boolean ramschAbrechnungAlle;
-    
-    
-    
+
     
     
     public void setWithRamsch(boolean withRamsch) {
@@ -70,4 +68,17 @@ public class TableSettings{
     public boolean isRamschAbrechnungAlle(){
         return this.ramschAbrechnungAlle;
     }
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TableSettings [withRamsch=").append(withRamsch).append(", ramschUnterDrueckenVerboten=")
+				.append(ramschUnterDrueckenVerboten).append(", zuViertOk=").append(zuViertOk)
+				.append(", zusatzPunkteGewonnen=").append(zusatzPunkteGewonnen).append(", zusatzPunkteVerloren=")
+				.append(zusatzPunkteVerloren).append(", ramschSkatWeiterreichen=").append(ramschSkatWeiterreichen)
+				.append(", ramschAbrechnungAlle=").append(ramschAbrechnungAlle).append("]");
+		return builder.toString();
+	}
+    
+    
 }

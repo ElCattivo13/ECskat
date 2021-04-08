@@ -25,7 +25,7 @@ public class PlayerResource {
     public static final String USER_ID = "userId";
     
     @Inject
-    private PlayerBean playerBean;
+    PlayerBean playerBean;
     
     @GET
     @Path("/findAll")
@@ -40,7 +40,7 @@ public class PlayerResource {
     public Response createOrUpdatePlayer(@CookieParam(USER_ID) Cookie userIdCookie, @PathParam("name") String name) {
         if (userIdCookie == null) {
             String playerId = playerBean.createPlayer(name);
-            return PlayerResponse.ok().toResponse(new NewCookie(USER_ID, playerId));
+            return PlayerResponse.ok().toResponse(new NewCookie(USER_ID, playerId, "/ecskat/", null, "toll", 60*60*24, false));
         } else {
             try {
                 Player player = playerBean.findPlayer(userIdCookie.getValue());

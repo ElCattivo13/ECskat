@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason;
 
@@ -298,6 +300,98 @@ public class Spiel extends BaseObject {
         
         return res;
     }
+
+	public LinkedList<Card> getSkat() {
+		return skat;
+	}
+
+	public void setSkat(LinkedList<Card> skat) {
+		this.skat = skat;
+	}
+
+	public Player getWerIstDran() {
+		return werIstDran;
+	}
+
+	public void setWerIstDran(Player werIstDran) {
+		this.werIstDran = werIstDran;
+	}
+
+	public Action getNaechsteAktion() {
+		return naechsteAktion;
+	}
+
+	public void setNaechsteAktion(Action naechsteAktion) {
+		this.naechsteAktion = naechsteAktion;
+	}
+
+	public AbstractMap.SimpleEntry<Player, Integer> getAktuellerReizwert() {
+		return aktuellerReizwert;
+	}
+
+	public void setAktuellerReizwert(AbstractMap.SimpleEntry<Player, Integer> aktuellerReizwert) {
+		this.aktuellerReizwert = aktuellerReizwert;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public GameLevel getGameLevel() {
+		return gameLevel;
+	}
+
+	public void setGameLevel(GameLevel gameLevel) {
+		this.gameLevel = gameLevel;
+	}
+
+	public Stich getAktuellerStich() {
+		return aktuellerStich;
+	}
+
+	public void setAktuellerStich(Stich aktuellerStich) {
+		this.aktuellerStich = aktuellerStich;
+	}
+
+	public Stich getLetzterStich() {
+		return letzterStich;
+	}
+
+	public void setLetzterStich(Stich letzterStich) {
+		this.letzterStich = letzterStich;
+	}
+
+	public int getSticheGespielt() {
+		return sticheGespielt;
+	}
+
+	public void setSticheGespielt(int sticheGespielt) {
+		this.sticheGespielt = sticheGespielt;
+	}
+
+	@JsonIgnore
+	public Table getTable() {
+		return table;
+	}
+
+	public Player getVorhand() {
+		return vorhand;
+	}
+
+	public Player getMittelhand() {
+		return mittelhand;
+	}
+
+	public Player getHinterhand() {
+		return hinterhand;
+	}
+    
+    
+    
     
 }
 

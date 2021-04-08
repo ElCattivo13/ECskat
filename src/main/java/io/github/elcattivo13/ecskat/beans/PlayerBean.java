@@ -2,16 +2,17 @@ package io.github.elcattivo13.ecskat.beans;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 import io.github.elcattivo13.ecskat.pojos.Player;
 
-// @Stateless TODO welche Annotation in Quarkus? @RequestScoped
+@RequestScoped // @Stateless TODO welche Annotation in Quarkus? @RequestScoped
 public class PlayerBean {
     
     @Inject
-    private PlayerCache playerCache;
+    PlayerCache playerCache;
     
     public String createPlayer(String name) {
         Player player = new Player(name);

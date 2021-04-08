@@ -8,12 +8,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.github.elcattivo13.ecskat.beans.TableBean;
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason;
 
 public class Player extends BaseObject {
 
 	private static final long serialVersionUID = 2619678530876426782L;
+	private static final Logger log = LoggerFactory.getLogger(Player.class);
 	
 	private String name;
     private boolean playing = true;
@@ -30,6 +35,7 @@ public class Player extends BaseObject {
     }
     
     public void joinTable(Table table) throws EcSkatException {
+    	log.info("joinTable - table: {}", table);
         table.addPlayer(this);
     }
     
