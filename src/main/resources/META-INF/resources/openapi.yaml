@@ -1,0 +1,442 @@
+---
+openapi: 3.0.3
+info:
+  title: ECskat API
+  version: 1.0.0
+paths:
+  /ecskat/hello-resteasy:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /ecskat/player/findAll:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerResponse'
+  /ecskat/player/notready:
+    put:
+      parameters:
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerResponse'
+  /ecskat/player/ready:
+    put:
+      parameters:
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerResponse'
+  /ecskat/player/{name}:
+    put:
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          $ref: '#/components/schemas/Cookie'
+      responses:
+        "200":
+          description: OK
+  /ecskat/table/create/{name}:
+    post:
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableSettings'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+  /ecskat/table/findAll:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+  /ecskat/table/hoeren/{tableId}/no:
+    put:
+      parameters:
+      - name: tableId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+  /ecskat/table/hoeren/{tableId}/yes:
+    put:
+      parameters:
+      - name: tableId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+  /ecskat/table/join:
+    put:
+      parameters:
+      - name: tableId
+        in: query
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+  /ecskat/table/sagen/{tableId}/{reizwert}:
+    put:
+      parameters:
+      - name: reizwert
+        in: path
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - name: tableId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+  /ecskat/table/skataufnehmen/{tableId}:
+    put:
+      parameters:
+      - name: tableId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+  /ecskat/table/startGame:
+    put:
+      parameters:
+      - name: tableId
+        in: query
+        schema:
+          type: string
+      - name: userId
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResponse'
+components:
+  schemas:
+    Action:
+      enum:
+      - KARTEN_OFFENLEGEN
+      - KARTE_SPIELEN
+      - RAMSCH_SKAT_WEITERREICHEN
+      - REIZEN_HOEREN
+      - REIZEN_SAGEN
+      - SPIEL_ANSAGEN
+      type: string
+    Blatt:
+      enum:
+      - ACHT
+      - ASS
+      - KOENIG
+      - NEUN
+      - OBER
+      - SIEBEN
+      - UNTER
+      - ZEHN
+      type: string
+    Card:
+      type: object
+      properties:
+        blatt:
+          $ref: '#/components/schemas/Blatt'
+        farbe:
+          $ref: '#/components/schemas/Farbe'
+    Cookie:
+      type: object
+      properties:
+        domain:
+          type: string
+        name:
+          type: string
+        path:
+          type: string
+        value:
+          type: string
+        version:
+          format: int32
+          type: integer
+    CutPosition:
+      enum:
+      - BOTTOM
+      - MIDDLE
+      - TOP
+      type: string
+    Farbe:
+      enum:
+      - EICHEL
+      - GRUEN
+      - HERZ
+      - SCHELL
+      type: string
+    Game:
+      enum:
+      - EICHEL
+      - GRAND
+      - GRUEN
+      - HERZ
+      - "NULL"
+      - NULL_HAND
+      - NULL_OUVERT
+      - NULL_OUVERT_HAND
+      - RAMSCH
+      - SCHELL
+      type: string
+    GameLevel:
+      enum:
+      - HAND
+      - NORMAL
+      - OUVERT
+      - SCHNEIDER_ANGESAGT
+      - SCHWARZ_ANGESAGT
+      type: string
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        cutPosition:
+          $ref: '#/components/schemas/CutPosition'
+        gewonneneStiche:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        name:
+          type: string
+        playing:
+          type: boolean
+        ready:
+          type: boolean
+        spitzen:
+          format: int32
+          type: integer
+        stichErhalten:
+          type: boolean
+    PlayerResponse:
+      type: object
+      properties:
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+        status:
+          type: string
+    SimpleEntryPlayerInteger:
+      type: object
+      properties:
+        key:
+          $ref: '#/components/schemas/Player'
+        value:
+          format: int32
+          type: integer
+    Spiel:
+      type: object
+      properties:
+        id:
+          type: string
+        aktuellerReizwert:
+          $ref: '#/components/schemas/SimpleEntryPlayerInteger'
+        aktuellerStich:
+          $ref: '#/components/schemas/Stich'
+        game:
+          $ref: '#/components/schemas/Game'
+        gameLevel:
+          $ref: '#/components/schemas/GameLevel'
+        hinterhand:
+          $ref: '#/components/schemas/Player'
+        letzterStich:
+          $ref: '#/components/schemas/Stich'
+        mittelhand:
+          $ref: '#/components/schemas/Player'
+        naechsteAktion:
+          $ref: '#/components/schemas/Action'
+        skat:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        sticheGespielt:
+          format: int32
+          type: integer
+        vorhand:
+          $ref: '#/components/schemas/Player'
+        werIstDran:
+          $ref: '#/components/schemas/Player'
+    Stich:
+      type: object
+      properties:
+        game:
+          $ref: '#/components/schemas/Game'
+        karte1:
+          $ref: '#/components/schemas/Card'
+        karte2:
+          $ref: '#/components/schemas/Card'
+        karte3:
+          $ref: '#/components/schemas/Card'
+        readOnly:
+          type: boolean
+        spieler1:
+          $ref: '#/components/schemas/Player'
+        spieler2:
+          $ref: '#/components/schemas/Player'
+        spieler3:
+          $ref: '#/components/schemas/Player'
+        winner:
+          $ref: '#/components/schemas/Player'
+    Table:
+      type: object
+      properties:
+        id:
+          type: string
+        indexGeber:
+          format: int32
+          type: integer
+        name:
+          type: string
+        settings:
+          $ref: '#/components/schemas/TableSettings'
+        spiel:
+          $ref: '#/components/schemas/Spiel'
+        spielStarted:
+          type: boolean
+        spieler:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+    TableResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        tableId:
+          type: string
+        tables:
+          type: array
+          items:
+            $ref: '#/components/schemas/Table'
+    TableSettings:
+      type: object
+      properties:
+        ramschAbrechnungAlle:
+          type: boolean
+        ramschSkatWeiterreichen:
+          type: boolean
+        ramschUnterDrueckenVerboten:
+          type: boolean
+        withRamsch:
+          type: boolean
+        zuViertOk:
+          type: boolean
+        zusatzPunkteGewonnen:
+          format: int32
+          type: integer
+        zusatzPunkteVerloren:
+          format: int32
+          type: integer
+er
