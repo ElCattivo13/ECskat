@@ -28,6 +28,7 @@ public class Player extends BaseObject {
     private int spitzen;
     private boolean stichErhalten = false;
     private boolean ready = false;
+    private boolean achtzehnGesagt = false;
     
     public Player(String name) {
         super();
@@ -118,13 +119,23 @@ public class Player extends BaseObject {
         cards = new ArrayList<>();
         gewonneneStiche = new ArrayList<>();
         spitzen = 0;
-        stichErhalten = false;
+        setStichErhalten(false);
+        serReady(false);
+        setAchtzehnGesagt(false);
+    }
+    
+    public boolean karteGespielt() {
+        return cards.length() < 10;
     }
     
     // TODO getter and setter
     
     public boolean isStichErhalten(){
         return this.stichErhalten;
+    }
+    
+    public void setStichErhalten(boolean stichErhalten) {
+      this.stichErhalten = stichErhalten;
     }
     
     public int getSpitzen(){
@@ -155,5 +166,11 @@ public class Player extends BaseObject {
 		this.ready = ready;
 	}
     
+    public boolean isAchtzehnGesagt(){
+        return this.achtzehnGesagt;
+    }
     
+    public void setAchtzehnGesagt(boolean achtzehnGesagt){
+        this.achtzehnGesagt = achtzehnGesagt;
+    }
 }

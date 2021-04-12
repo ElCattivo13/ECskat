@@ -59,9 +59,10 @@ public class TableBean {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         Card karte = new Card(Farbe.of(farbe), Blatt.of(blatt));
         Optional<SpielResult> res = pts.spiel.karteSpielen(pts.player, karte);
-        
-        // TODO was tun mit dem SpielResult
-        
+        if (res.isPresent()) {
+          pts.table.addWertung(res.get());
+          // TODO notify player about game result
+        }
     }
     
     public void austeilen(String playerId, String tableId) throws EcSkatException {
@@ -86,6 +87,18 @@ public class TableBean {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         pts.spiel.skatAufnehmen(pts.player);
     }
+    
+    public void kontraSagen(String playerId, String tableId) throws EcSkatException {
+        PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
+        pts.spiel.kontraSagen(pts.player);
+    }
+    
+    public void reSagen(String playerId, String tableId) throws EcSkatException {
+        PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
+        pts.spiel.reSagen(pts.player);
+    }
+    
+    
     
     
     /*

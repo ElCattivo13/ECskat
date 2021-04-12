@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
-import io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason;
 
 import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.*;
 
@@ -40,6 +39,8 @@ public class Spiel extends BaseObject {
     private Stich aktuellerStich;
     private Stich letzterStich;
     private int sticheGespielt = 0;
+    private boolean kontra = false;
+    private boolean re = false;
     
     public Spiel(Table table, Player vorhand, Player mittelhand, Player hinterhand, CutPosition cutPosition) {
         super();
@@ -85,7 +86,7 @@ public class Spiel extends BaseObject {
             throw new EcSkatException(Reason.NOT_YOUR_TURN);
         }
         if (naechsteAktion != action) {
-            throw new EcSkatException(WRONG_ACTION);
+            throw new EcSkatException(ILLEGAL_ACTION);
         }
     }
     
@@ -95,6 +96,7 @@ public class Spiel extends BaseObject {
             throw new EcSkatException(ILLEGAL_REIZWERT);
         }
         if (reizwert > aktuellerReizwert.getValue()) {
+            spieler.setAchtzehnGesagt(true);
             next((aktuellerReizwert.getKey() != null) ? aktuellerReizwert.getKey() : vorhand, (!spieler.equals(vorhand)) ? Action.REIZEN_HOEREN : Action.SPIEL_ANSAGEN);
             aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, reizwert);
         } else {
@@ -102,6 +104,7 @@ public class Spiel extends BaseObject {
             if (spieler.equals(vorhand)) {
                 if (table.getSettings().isWithRamsch()) {
                     game = Game.RAMSCH;
+                    gameLevel = GameLevel.NORMAL;
                     vorhand.receiveCards(true, skat.poll(),skat.poll());
                     next(vorhand, Action.RAMSCH_SKAT_WEITERREICHEN);
                 } else {
@@ -158,6 +161,7 @@ public class Spiel extends BaseObject {
     public void reizenHoeren(Player spieler, boolean ja) throws EcSkatException {
         checkAction(spieler, Action.REIZEN_HOEREN);
         if (ja) {
+            spieler.setAchtzehnGesagt(true);
             next(aktuellerReizwert.getKey(), Action.REIZEN_SAGEN);
             aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, aktuellerReizwert.getValue());
         } else {
@@ -211,33 +215,7 @@ public class Spiel extends BaseObject {
         res.setGameLevel(gameLevel);
         
         if (game == Game.RAMSCH) {
-            final int punkteVorhand = vorhand.sumPoints();
-            final int punkteMittelhand = mittelhand.sumPoints();
-            final int punkteHinterhand = hinterhand.sumPoints();
-            
-            final boolean schwarzVorhand = !vorhand.isStichErhalten();
-            final boolean schwarzMittelhand = !mittelhand.isStichErhalten();
-            final boolean schwarzHinterhand = !hinterhand.isStichErhalten();
-            
-            final boolean durchmarschVorhand = schwarzMittelhand && schwarzHinterhand;
-            final boolean durchmarschMittelhand = schwarzVorhand && schwarzMittelhand;
-            final boolean durchmarschHinterhand = schwarzVorhand && schwarzMittelhand;
-            
-            final int wertungVorhand = (durchmarschVorhand ? 1 :
-                (table.getSettings().isRamschAbrechnungAlle() ||
-                (punkteVorhand >= punkteMittelhand && punkteVorhand >= punkteHinterhand) ? -2 : 0));
-            final int wertungMittelhand = (durchmarschMittelhand ? 1 :
-                (table.getSettings().isRamschAbrechnungAlle() ||
-                (punkteMittelhand >= punkteVorhand && punkteMittelhand >= punkteHinterhand) ? -2 : 0));
-            final int wertungHinterhand = (durchmarschHinterhand ? 1 :
-                (table.getSettings().isRamschAbrechnungAlle() ||
-                (punkteHinterhand >= punkteVorhand && punkteHinterhand >= punkteMittelhand) ? -2 : 0));
-            
-            res.putWertung(vorhand, wertungVorhand * punkteVorhand);
-            res.putWertung(mittelhand, wertungMittelhand * punkteMittelhand);
-            res.putWertung(hinterhand, wertungHinterhand * punkteHinterhand);
-            
-            return res;
+            return spielAuswertenRamsch(res);
         }
         
         final int zusatzPunkteGewonnen = table.getSettings().getZusatzPunkteGewonnen();
@@ -251,6 +229,7 @@ public class Spiel extends BaseObject {
         log.info("Punkte Alleinspieler: {}", punkteAlleinspieler);
         final int punkteGegenspieler = gegenspieler.stream().mapToInt(Player::sumPoints).sum();
         log.info("Punkte Gegenspieler: {}", punkteGegenspieler);
+        final int faktorKontraRe = (kontra ? 2 : 1)*(re ? 2 : 1);
         final int faktorVerloren = game.isHandSpiel(gameLevel) ? -1 : -2;
         final boolean schneider = punkteGegenspieler <= 30;
         final boolean schwarz = !gegenspieler.stream()
@@ -263,12 +242,13 @@ public class Spiel extends BaseObject {
         
         if (game.isNullSpiel()) {
             if (alleinspielerSchwarz) {
-                res.putWertung(alleinspieler, game.grundwert + zusatzPunkteGewonnen);
+                res.putWertung(alleinspieler, faktorKontraRe * game.grundwert + zusatzPunkteGewonnen);
                 gegenspieler.forEach(p -> res.putWertung(p, 0));
             } else {
-                res.putWertung(alleinspieler, faktorVerloren * game.grundwert);
+                res.putWertung(alleinspieler, faktorKontraRe * faktorVerloren * game.grundwert);
                 gegenspieler.forEach(p -> res.putWertung(p, zusatzPunkteVerloren));
             }
+            return res;
         } else {
             // Farbspiele oder Grand
             if ((punkteAlleinspieler <= 60) ||
@@ -283,11 +263,12 @@ public class Spiel extends BaseObject {
                 if (gameLevel.ordinal() <= GameLevel.SCHNEIDER_ANGESAGT.ordinal() && alleinspielerSchwarz) {
                     fall++;
                 }
-                res.putWertung(alleinspieler, faktorVerloren * game.grundwert * (alleinspieler.getSpitzen() + fall));
+                res.putWertung(alleinspieler, faktorKontraRe * faktorVerloren * game.grundwert * (alleinspieler.getSpitzen() + fall));
                 gegenspieler.forEach(p -> res.putWertung(p, zusatzPunkteVerloren));
             } else {
                 // gewonnen
                 res.putWertung(alleinspieler, 
+                    faktorKontraRe * 
                     game.grundwert * (
                         alleinspieler.getSpitzen() + 
                         gameLevel.gewinnStufe + 
@@ -300,7 +281,66 @@ public class Spiel extends BaseObject {
         
         return res;
     }
-
+    
+    private SpielResult spielAuswertenRamsch(SpielResult res) {
+        
+        final int punkteVorhand = vorhand.sumPoints();
+        final int punkteMittelhand = mittelhand.sumPoints();
+        final int punkteHinterhand = hinterhand.sumPoints();
+        
+        final boolean schwarzVorhand = !vorhand.isStichErhalten();
+        final boolean schwarzMittelhand = !mittelhand.isStichErhalten();
+        final boolean schwarzHinterhand = !hinterhand.isStichErhalten();
+                  
+        final boolean durchmarschVorhand = schwarzMittelhand && schwarzHinterhand;
+        final boolean durchmarschMittelhand = schwarzVorhand && schwarzMittelhand;
+        final boolean durchmarschHinterhand = schwarzVorhand && schwarzMittelhand;
+                  
+        final int wertungVorhand = (durchmarschVorhand ? 1 :
+            (table.getSettings().isRamschAbrechnungAlle() ||
+            (punkteVorhand >= punkteMittelhand && punkteVorhand >= punkteHinterhand) ? -2 : 0));
+        final int wertungMittelhand = (durchmarschMittelhand ? 1 :
+            (table.getSettings().isRamschAbrechnungAlle() ||
+            (punkteMittelhand >= punkteVorhand && punkteMittelhand >= punkteHinterhand) ? -2 : 0));
+        final int wertungHinterhand = (durchmarschHinterhand ? 1 :
+            (table.getSettings().isRamschAbrechnungAlle() ||
+            (punkteHinterhand >= punkteVorhand && punkteHinterhand >= punkteMittelhand) ? -2 : 0));
+        
+        res.putWertung(vorhand, wertungVorhand * punkteVorhand);
+        res.putWertung(mittelhand, wertungMittelhand * punkteMittelhand);
+        res.putWertung(hinterhand, wertungHinterhand * punkteHinterhand);
+                  
+        return res;
+    }
+    
+    public void kontraSagen(Player spieler) throws EcSkatException {
+        if (!vorhand.equals(spieler) && !mittelhand.equals(spieler) && !hinterhand.equals(spieler)) {
+            throw new EcSkatException(UNEXPECTED_PLAYER);
+        } else if (naechsteAktion != Action.KARTE_SPIELEN ||
+                aktuellerReizwert.getKey() == null ||
+                aktuellerReizwert.getKey().equals(spieler) ||
+                spieler.karteGespielt() ||
+                !spieler.isAchtzehnGesagt() ||
+                kontra) {
+            throw new EcSkatException(ILLEGAL_ACTION);
+        }
+        kontra = true;
+    }
+    
+    public void reSagen(Player spieler) throws EcSkatException {
+        if (!vorhand.equals(spieler) && !mittelhand.equals(spieler) && !hinterhand.equals(spieler)) {
+           throw new EcSkatException(UNEXPECTED_PLAYER);
+        } else if (naechsteAktion != Action.KARTE_SPIELEN ||
+                aktuellerReizwert.getKey() == null ||
+                !aktuellerReizwert.getKey().equals(spieler) ||
+                spieler.karteGespielt() ||
+                !kontra ||
+                re) {
+            throw new EcSkatException(ILLEGAL_ACTION);
+        }
+        re = true;
+    }
+    
 	public LinkedList<Card> getSkat() {
 		return skat;
 	}
@@ -390,7 +430,9 @@ public class Spiel extends BaseObject {
 		return hinterhand;
 	}
     
-    
+  public boolean isKontra(){
+    return this.kontra;
+  }
     
     
 }

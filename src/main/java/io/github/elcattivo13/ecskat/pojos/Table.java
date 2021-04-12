@@ -1,10 +1,6 @@
 package io.github.elcattivo13.ecskat.pojos;
 
-import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.NOT_ENOUGH_PLAYER_AT_TABLE;
-import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.PLAYER_ALREADY_AT_TABLE;
-import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.SPIEL_ALREADY_STARTED;
-import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.TABLE_IS_FULL;
-import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.NOT_YOUR_TURN;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +16,10 @@ public class Table extends BaseObject {
 	
 	private final String name;
     private final TableSettings settings;
-    private List<Player> spieler;
+    private List<Player> spieler = new ArrayList<>();
     private int indexGeber = 0;
     private Spiel spiel;
-    private boolean spielStarted;
+    private List<SpielResult> wertungen = new ArrayList<>();
     
     public Table(String name) {
         this(name, new TableSettings());
@@ -44,7 +40,7 @@ public class Table extends BaseObject {
             throw new EcSkatException(TABLE_IS_FULL);
         } else if (spieler.contains(player)) {
             throw new EcSkatException(PLAYER_ALREADY_AT_TABLE);
-        } else if (spielStarted) {
+        } else if (spiel != null || !wertungen.isEmpty()) {
             throw new EcSkatException(SPIEL_ALREADY_STARTED);
         } else {
             spieler.add(player);
@@ -56,19 +52,25 @@ public class Table extends BaseObject {
     }
     
     public void startNextSpiel(Player geber) throws EcSkatException {
-    	if (spieler.size() < 3) {
-    		throw new EcSkatException(NOT_ENOUGH_PLAYER_AT_TABLE);
-    	} else if (!spieler.get(indexGeber).equals(geber)) {
-    		throw new EcSkatException(NOT_YOUR_TURN);
-    	}
-        spielStarted = true;
-        spiel = new Spiel(
-            this,
-            spieler.get((indexGeber + 1) % spieler.size()),
-            spieler.get((indexGeber + 2) % spieler.size()),
-            spieler.get((indexGeber + 3) % spieler.size()),
+        
+        if (spieler.size() < 3) {
+            throw new EcSkatException(NOT_ENOUGH_PLAYER_AT_TABLE);
+        } else if (!spieler.get(indexGeber).equals(geber)) {
+            throw new EcSkatException(NOT_YOUR_TURN);
+        }
+        
+        Player vorhand = spieler.get((indexGeber + 1) % spieler.size());
+        Player mittelhand = spieler.get((indexGeber + 2) % spieler.size());
+        Player hinterhand = spieler.get((indexGeber + 3) % spieler.size());
+        
+        if (!vorhand.isReady() || !mittelhand.isReady() || !hinterhand.isReady()) {
+          throw new EcSkatException(PLAYER_NOT_READY);
+        }
+        
+        spiel = new Spiel(this, vorhand, mittelhand, hinterhand,
             spieler.get((indexGeber + spieler.size() - 1) % spieler.size()).getCutPosition()
         );
+        
         indexGeber++;
     }
     
@@ -96,6 +98,18 @@ public class Table extends BaseObject {
     public Spiel getSpiel() {
         return this.spiel;
     }
+    
+    public List<SpielResult> getWertungen(){
+      return this.wertungen;
+    }
+    
+    public void setWertungen(List<SpielResult> wertungen){
+      this.wertungen = wertungen;
+    }
+    
+    public void addWertung(SpielResult wertung){
+      this.wertungen.add(wertung);
+    }
 
 	@Override
 	public String toString() {
@@ -110,7 +124,7 @@ public class Table extends BaseObject {
 		builder.append("indexGeber=").append(indexGeber).append(", ");
 		if (spiel != null)
 			builder.append("spiel=").append(spiel).append(", ");
-		builder.append("spielStarted=").append(spielStarted).append("]");
+		builder.!=append("]");
 		return builder.toString();
 	}
     

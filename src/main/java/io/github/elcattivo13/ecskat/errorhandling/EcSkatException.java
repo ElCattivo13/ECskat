@@ -29,10 +29,11 @@ public class EcSkatException extends Exception {
         CARD_NOT_PRESENT,
         INVALID_SKAT_SIZE,
         NOT_YOUR_TURN,
-        WRONG_ACTION,
+        ILLEGAL_ACTION,
         ILLEGAL_REIZWERT,
         UNEXPECTED_PLAYER,
         RAMSCH_UNTER_DRUECKEN_VERBOTEN,
-        HANDSPIEL_NOT_ALLOWED
+        HANDSPIEL_NOT_ALLOWED,
+        PLAYER_NOT_READY
     }
 }

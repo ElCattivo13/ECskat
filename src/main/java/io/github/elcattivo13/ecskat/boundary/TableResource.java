@@ -117,5 +117,25 @@ public class TableResource {
         }
     }
     
+    @PUT
+    @Path("kontrasagen/{tableId}")
+    public TableResponse kontraSagen(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
+        try {
+            tableBean.kontraSagen(userId, tableId);
+            return TableResponse.ok();
+        } catch(EcSkatException e) {
+            return TableResponse.fail(e);
+        }
+    }
     
+    @PUT
+    @Path("resagen/{tableId}")
+    public TableResponse reSagen(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("tableId") String tableId) {
+        try {
+            tableBean.reSagen(userId, tableId);
+            return TableResponse.ok();
+        } catch(EcSkatException e) {
+            return TableResponse.fail(e);
+        }
+    }
 }
