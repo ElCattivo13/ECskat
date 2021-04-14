@@ -209,10 +209,11 @@ public class Spiel extends BaseObject {
         } else {
             letzterStich = result.get();
             sticheGespielt++;
-            if (sticheGespielt < 10) {
-                next(letzterStich.getWinner(), Action.KARTE_SPIELEN);
-            } else {
+            if ((game.isNullSpiel() && aktuellerReizwert.getKey().isStichErhalten()) ||
+                    (sticheGespielt == 10)) {
                 return Optional.of(spielAuswerten());
+            } else {
+                next(letzterStich.getWinner(), Action.KARTE_SPIELEN);
             }
         }
         return Optional.empty();

@@ -61,7 +61,7 @@ REST is easy peasy with this Hello World RESTEasy resource.
 ## ToDos
 
 ### Fachlich:
-- vorzeitiges Beenden des Spiels (z.B. Null verloren)
+- 
 
 ### Technisch:
 - ExceptionHandling (ID ans Frontend + logausschrift)
