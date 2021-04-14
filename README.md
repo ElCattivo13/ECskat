@@ -56,3 +56,28 @@ If you want to learn more about building native executables, please consult http
 REST is easy peasy with this Hello World RESTEasy resource.
 
 [Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+
+
+## ToDos
+
+### Fachlich:
+- vorzeitiges Beenden des Spiels (z.B. Null verloren)
+- setCutPosition und auch benutzen
+
+### Technisch:
+- ExceptionHandling (ID ans Frontend + logausschrift)
+- REST-Endpunkte
+- WebSocket-Implementierung
+- UnitTests
+- API tests mit RESTassured
+- Security (https + wss)
+- in SpielResult player zu playerId ändern
+
+### Hohe Flughoehe:
+- Backend auf Diski zum Laufen bringen
+- Frontend lokal
+- Buildprozess mit github
+
+### Perspektivisch:
+- Ideen für Authentifizierung (KeyCloak?)
+- Datenbankanbindung

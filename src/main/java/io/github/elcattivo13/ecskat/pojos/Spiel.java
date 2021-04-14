@@ -41,6 +41,7 @@ public class Spiel extends BaseObject {
     private int sticheGespielt = 0;
     private boolean kontra = false;
     private boolean re = false;
+    private SpielResult sr = new SpielResult();
     
     public Spiel(Table table, Player vorhand, Player mittelhand, Player hinterhand, CutPosition cutPosition) {
         super();
@@ -73,6 +74,11 @@ public class Spiel extends BaseObject {
         vorhand.receiveCards(true, deck.poll(), deck.poll(), deck.poll());
         mittelhand.receiveCards(true, deck.poll(), deck.poll(), deck.poll());
         hinterhand.receiveCards(true, deck.poll(), deck.poll(), deck.poll());
+        
+        sr.setSkat(new ArrayList<>(skat));
+        sr.putAusgeteilteKarten(vorhand, new ArrayList<>(vorhand.getCards()));
+        sr.putAusgeteilteKarten(mittelhand, new ArrayList<>(mittelhand.getCards()));
+        sr.putAusgeteilteKarten(hinterhand, new ArrayList<>(hinterhand.getCards()));
     }
     
     private void next(Player spieler, Action action) {
@@ -108,7 +114,7 @@ public class Spiel extends BaseObject {
                     vorhand.receiveCards(true, skat.poll(),skat.poll());
                     next(vorhand, Action.RAMSCH_SKAT_WEITERREICHEN);
                 } else {
-                    SpielResult res = new SpielResult();
+                    SpielResult res = sr;
                     res.setEingemischt(true);
                     return Optional.of(res);
                 }
@@ -180,6 +186,9 @@ public class Spiel extends BaseObject {
         if (skat.isEmpty() && gameLevel != GameLevel.NORMAL) {
             throw new EcSkatException(HANDSPIEL_NOT_ALLOWED);
         }
+        if (game.isNullSpiel() && game.grundwert < aktuellerReizwert.getValue()) {
+            throw new EcSkatException(NULLSPIEL_UEBERREIZT);
+        }
         this.game = game;
         this.gameLevel = gameLevel;
         this.aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, aktuellerReizwert.getValue());
@@ -210,7 +219,7 @@ public class Spiel extends BaseObject {
     }
     
     private SpielResult spielAuswerten() {
-        SpielResult res = new SpielResult();
+        SpielResult res = sr;
         res.setGame(game);
         res.setGameLevel(gameLevel);
         
@@ -225,7 +234,7 @@ public class Spiel extends BaseObject {
         List<Player> gegenspieler = Stream.of(vorhand, mittelhand, hinterhand)
             .filter(p -> !p.equals(alleinspieler))
             .collect(Collectors.toList());
-        final int punkteAlleinspieler = alleinspieler.sumPoints();
+        final int punkteAlleinspieler = alleinspieler.sumPoints() + skat.stream().mapToInt(Card::punkte).sum();
         log.info("Punkte Alleinspieler: {}", punkteAlleinspieler);
         final int punkteGegenspieler = gegenspieler.stream().mapToInt(Player::sumPoints).sum();
         log.info("Punkte Gegenspieler: {}", punkteGegenspieler);
@@ -241,6 +250,7 @@ public class Spiel extends BaseObject {
         res.setGespaltenes(punkteAlleinspieler == punkteGegenspieler);
         
         if (game.isNullSpiel()) {
+            // überreizen ist bereits bei Spielansage abgefangen
             if (alleinspielerSchwarz) {
                 res.putWertung(alleinspieler, faktorKontraRe * game.grundwert + zusatzPunkteGewonnen);
                 gegenspieler.forEach(p -> res.putWertung(p, 0));
@@ -251,30 +261,29 @@ public class Spiel extends BaseObject {
             return res;
         } else {
             // Farbspiele oder Grand
-            if ((punkteAlleinspieler <= 60) ||
+            int fallGewonnen = alleinspieler.getSpitzen() + gameLevel.gewinnStufe + (schneider ? 1 : 0) + (schwarz ? 1 : 0);
+            double reizwert = aktuellerReizwert.getValue();
+            if ((fallGewonnen * game.grundwert < reizwert ||
+                (punkteAlleinspieler <= 60) ||
                 (gameLevel == GameLevel.SCHNEIDER_ANGESAGT && !schneider) ||
                 (gameLevel == GameLevel.SCHWARZ_ANGESAGT && !schwarz) ||
                 (gameLevel == GameLevel.OUVERT && !schwarz)) {
                 // verloren
-                int fall = gameLevel.gewinnStufeVerloren;
+                int fallVerloren = gameLevel.gewinnStufeVerloren + alleinspieler.getSpitzen();
                 if (gameLevel.ordinal() <= GameLevel.HAND.ordinal() && alleinspielerSchneider) {
-                    fall++;
+                    fallVerloren++;
                 }
                 if (gameLevel.ordinal() <= GameLevel.SCHNEIDER_ANGESAGT.ordinal() && alleinspielerSchwarz) {
-                    fall++;
+                    fallVerloren++;
                 }
-                res.putWertung(alleinspieler, faktorKontraRe * faktorVerloren * game.grundwert * (alleinspieler.getSpitzen() + fall));
+                fallVerloren = Math.max(fallVerloren, Math.ceil(reizwert / game.grundwert));
+                //
+                res.putWertung(alleinspieler, faktorKontraRe * faktorVerloren * game.grundwert * fallVerloren);
                 gegenspieler.forEach(p -> res.putWertung(p, zusatzPunkteVerloren));
             } else {
                 // gewonnen
                 res.putWertung(alleinspieler, 
-                    faktorKontraRe * 
-                    game.grundwert * (
-                        alleinspieler.getSpitzen() + 
-                        gameLevel.gewinnStufe + 
-                        (schneider ? 1 : 0) + 
-                        (schwarz ? 1 : 0)) + 
-                        zusatzPunkteGewonnen);
+                    faktorKontraRe * game.grundwert * fallGewonnen + zusatzPunkteGewonnen);
                 gegenspieler.forEach(p -> res.putWertung(p, 0));
             }
         }
@@ -283,6 +292,9 @@ public class Spiel extends BaseObject {
     }
     
     private SpielResult spielAuswertenRamsch(SpielResult res) {
+        
+        letzterStich.getWinner().receiveCards(false, skat.get(0), skat.get(1));
+        letzterStich.getWinner().skatDruecken(this.skat);
         
         final int punkteVorhand = vorhand.sumPoints();
         final int punkteMittelhand = mittelhand.sumPoints();
@@ -339,6 +351,20 @@ public class Spiel extends BaseObject {
             throw new EcSkatException(ILLEGAL_ACTION);
         }
         re = true;
+    }
+    
+    public void ansageErhoehen(Player spieler, GameLevel gameLevel) throws EcSkatException {
+        if (!vorhand.equals(spieler) && !mittelhand.equals(spieler) && !hinterhand.equals(spieler)) {
+           throw new EcSkatException(UNEXPECTED_PLAYER);
+        } else if (naechsteAktion != Action.KARTE_SPIELEN ||
+                aktuellerReizwert.getKey() == null ||
+                !aktuellerReizwert.getKey().equals(spieler) ||
+                spieler.karteGespielt() ||
+                skat.isEmpty() ||
+                this.gameLevel.gewinnStufe >= gameLevel.gewinnStufe) {
+            throw new EcSkatException(ILLEGAL_ACTION);
+        }
+        this.gameLevel = gameLevel;
     }
     
 	public LinkedList<Card> getSkat() {

@@ -34,6 +34,7 @@ public class EcSkatException extends Exception {
         UNEXPECTED_PLAYER,
         RAMSCH_UNTER_DRUECKEN_VERBOTEN,
         HANDSPIEL_NOT_ALLOWED,
-        PLAYER_NOT_READY
+        PLAYER_NOT_READY,
+        NULLSPIEL_UEBERREIZT
     }
 }

@@ -173,4 +173,8 @@ public class Player extends BaseObject {
     public void setAchtzehnGesagt(boolean achtzehnGesagt){
         this.achtzehnGesagt = achtzehnGesagt;
     }
+    
+    public List<Card> getCards(){
+        return this.cards;
+    }
 }
