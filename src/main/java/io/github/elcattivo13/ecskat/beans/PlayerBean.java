@@ -31,4 +31,8 @@ public class PlayerBean {
     public void toggleReady(String playerId, boolean ready) throws EcSkatException {
         findPlayer(playerId).setReady(ready);
     }
+    
+    public void setCutPosition(String playerId, CutPosition pos) throws EcSkatException {
+        findPlayer(playerId).setCutPosition(pos);
+    }
 }

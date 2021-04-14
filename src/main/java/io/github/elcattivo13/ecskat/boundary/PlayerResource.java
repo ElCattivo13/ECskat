@@ -75,4 +75,16 @@ public class PlayerResource {
             return PlayerResponse.fail(e);
         }
     }
+    
+    @PUT
+    @Path("/cutposition/{pos}")
+    public PlayerResponse putCutposition(@CookieParam(USER_ID) String userId, @PathParam("pos") CutPostion pos) {
+        try {
+            playerBean.setCutPosition(userId, pos);
+            return PlayerResponse.ok();
+        } catch(EcSkatException e) {
+            return PlayerResponse.fail(e);
+        }
+    }
+    
 }

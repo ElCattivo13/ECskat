@@ -84,8 +84,11 @@ public class Card {
         Collections.shuffle(deck, random);
     }
     
-    public static void cutDeck(List<Card> deck, CutPosition pos) {
-        // TODO implement cutDeck
+    public static int cutDeck(List<Card> deck, CutPosition pos) {
+        Consumer<Integer> eineKarteAbheben = (i) -> deck.add(deck.remove(0));
+        int position = pos.toInt();
+        Collections.nCopies(position, 42).forEach(eineKarteAbheben);
+        return position;
     }
 
 	@Override

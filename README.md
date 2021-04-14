@@ -62,10 +62,10 @@ REST is easy peasy with this Hello World RESTEasy resource.
 
 ### Fachlich:
 - vorzeitiges Beenden des Spiels (z.B. Null verloren)
-- setCutPosition und auch benutzen
 
 ### Technisch:
 - ExceptionHandling (ID ans Frontend + logausschrift)
+- ExceptionHandling: Nulls bei deserialisierten Enums (CutPosition, Game, ...)
 - REST-Endpunkte
 - WebSocket-Implementierung
 - UnitTests
