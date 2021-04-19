@@ -35,6 +35,10 @@ public class Table extends BaseObject {
         log.info("Table constructor with settings called: {}", settings);
     }
     
+    public void sendToTable(SkatMessage msg) throws EcSkatException {
+        getWebsocket().sendToPlayers(msg, this.getSpieler());
+    }
+    
     public void addPlayer(Player player) throws EcSkatException {
         if (spieler.size() >= 4 || (!settings.isZuViertOk() && spieler.size() >= 3)) {
             throw new EcSkatException(TABLE_IS_FULL);
@@ -53,7 +57,9 @@ public class Table extends BaseObject {
     
     public void startNextSpiel(Player geber) throws EcSkatException {
         
-        if (spieler.size() < 3) {
+        if (spiel != null) {
+            throw new EcSkatException(SPIEL_ALREADY_STARTED);
+        } else if (spieler.size() < 3) {
             throw new EcSkatException(NOT_ENOUGH_PLAYER_AT_TABLE);
         } else if (!spieler.get(indexGeber).equals(geber)) {
             throw new EcSkatException(NOT_YOUR_TURN);
@@ -62,19 +68,26 @@ public class Table extends BaseObject {
         Player vorhand = spieler.get((indexGeber + 1) % spieler.size());
         Player mittelhand = spieler.get((indexGeber + 2) % spieler.size());
         Player hinterhand = spieler.get((indexGeber + 3) % spieler.size());
+        Player watcher = spieler.size() == 3 ? null : spieler.get((indexGeber + 4) % spieler.size());
         
         if (!vorhand.isReady() || !mittelhand.isReady() || !hinterhand.isReady()) {
           throw new EcSkatException(PLAYER_NOT_READY);
         }
         
-        spiel = new Spiel(this, vorhand, mittelhand, hinterhand,
+        spiel = new Spiel(this, vorhand, mittelhand, hinterhand, watcher,
             spieler.get((indexGeber + spieler.size() - 1) % spieler.size()).getCutPosition()
         );
+        spiel.setWebsocket(this.getWebsocket());
         
         indexGeber++;
     }
     
-    
+    public void spielAbschliessen(SpielResult result) {
+        addWertung(result);
+        spieler.forEach(s -> s.reset());
+        spiel = null;
+        sendToTable(SkatMessage.of(SPIELRESULTAT).setResultat(res.get()));
+    }
     
     
     

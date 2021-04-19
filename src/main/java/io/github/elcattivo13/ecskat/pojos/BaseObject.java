@@ -8,6 +8,7 @@ public class BaseObject implements Serializable {
     
 	private static final long serialVersionUID = 1L;
     private final String id;
+    private SkatWebsocket websocket;
     
     public BaseObject() {
         this.id = UUID.randomUUID().toString();
@@ -15,6 +16,19 @@ public class BaseObject implements Serializable {
     
     public String getId() {
         return this.id;
+    }
+    
+    @JsonIgnore
+    public SkatWebsocket getWebsocket() throws EcSkatException {
+        if (this.websocket == null) {
+            throw new EcSkatException(NO_WEBSOCKET)
+        }
+        return this.websocket;
+    }
+    
+    @JsonIgnore
+    public void setWebsocket(SkatWebsocket websocket){
+        this.websocket = websocket;
     }
 
 	@Override

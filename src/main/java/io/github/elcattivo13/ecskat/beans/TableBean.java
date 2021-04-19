@@ -33,6 +33,9 @@ public class TableBean {
     @Inject 
     PlayerCache playerCache;
     
+    @Inject
+    SkatWebsocket websocket;
+    
     public String createTable(String name, String creatorId, TableSettings settings) throws EcSkatException {
         Table table;
         log.info("Name: {}, creatorId: {}, settings: {}", name, creatorId, settings);
@@ -41,8 +44,10 @@ public class TableBean {
         } else {
             table = new Table(name, settings);
         }
+        table.setWebsocket(websocket);
         this.tableCache.addTable(table);
         findPlayer(creatorId).joinTable(table);
+        websocket.sendToAll(SkatMessage.of(NEW_TABLE).setTable(table));
         return table.getId();
     }
     
@@ -59,10 +64,7 @@ public class TableBean {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         Card karte = new Card(Farbe.of(farbe), Blatt.of(blatt));
         Optional<SpielResult> res = pts.spiel.karteSpielen(pts.player, karte);
-        if (res.isPresent()) {
-          pts.table.addWertung(res.get());
-          // TODO notify player about game result
-        }
+        res.ifPresent(pts.table::spielAbschliessen);
     }
     
     public void austeilen(String playerId, String tableId) throws EcSkatException {
@@ -73,9 +75,7 @@ public class TableBean {
     public void sagen(String playerId, String tableId, Integer reizwert) throws EcSkatException {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         Optional<SpielResult> res = pts.spiel.reizenSagen(pts.player, reizwert);
-        if (res.isPresent()) {
-            // TODO Spiel wurde eingemischt, wie weiter?
-        }
+        res.ifPresent(pts.table::spielAbschliessen);
     }
     
     public void hoeren(String playerId, String tableId, boolean ja) throws EcSkatException {
@@ -139,6 +139,10 @@ public class TableBean {
         } else {
             return t.getSpiel();
         }
+    }
+    
+    private void sendMessage(SkatMessage msg) {
+        
     }
     
     private static class PlayerTable {

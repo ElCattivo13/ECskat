@@ -14,8 +14,12 @@ public class PlayerBean {
     @Inject
     PlayerCache playerCache;
     
+    @Inject
+    SkatWebsocket websocket;
+    
     public String createPlayer(String name) {
         Player player = new Player(name);
+        player.setWebsocket(websocket);
         this.playerCache.addPlayer(player);
         return player.getId();
     }
@@ -29,7 +33,11 @@ public class PlayerBean {
     }
     
     public void toggleReady(String playerId, boolean ready) throws EcSkatException {
-        findPlayer(playerId).setReady(ready);
+        Player spieler = findPlayer(playerId);
+        spieler.setReady(ready);
+        websocket.sendToPlayers(
+            SkatMessage.of(READY).setSubject(spieler).setReady(ready),
+            spieler.getTable().getSpieler());
     }
     
     public void setCutPosition(String playerId, CutPosition pos) throws EcSkatException {

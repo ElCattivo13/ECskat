@@ -21,7 +21,7 @@ public class Player extends BaseObject {
 	private static final Logger log = LoggerFactory.getLogger(Player.class);
 	
 	private String name;
-    private boolean playing = true;
+    private Table table;
     private List<Card> cards = new ArrayList<>();
     private List<Card> gewonneneStiche = new ArrayList<>();
     private CutPosition cutPosition = CutPosition.TOP;
@@ -38,18 +38,28 @@ public class Player extends BaseObject {
     public void joinTable(Table table) throws EcSkatException {
     	log.info("joinTable - table: {}", table);
         table.addPlayer(this);
+        setTable(table);
+        getWebsocket().sendToPlayers(
+            SkatMessage.of(TABLE_JOINED).setSubject(this),
+            table.getSpieler());
     }
     
     public void leaveTable(Table table) {
         table.removePlayer(this);
+        setTable(null);
+        getWebsocket().sendToPlayers(
+            SkatMessage.of(TABLE_LEFT).setSubject(this),
+            table.getSpieler());
     }
     
-    public void receiveCards(boolean notify, Card... newCards) {
+    public void receiveCards(boolean notify, Card... newCards) throws EcSkatException {
         for (Card card : newCards) {
             this.cards.add(card);
         }
         if (notify) {
-            // TODO notification via WebSocket
+            getWebsocket().sendToPlayer(
+                SkatMessage.of(Key.KARTEN_BEKOMMEN).setKarten(getCards()),
+                this);
         }
     }
     
@@ -130,14 +140,17 @@ public class Player extends BaseObject {
     
     // TODO getter and setter
     
+    @JsonIgnore
     public boolean isStichErhalten(){
         return this.stichErhalten;
     }
     
+    @JsonIgnore
     public void setStichErhalten(boolean stichErhalten) {
       this.stichErhalten = stichErhalten;
     }
     
+    @JsonIgnore
     public int getSpitzen(){
         return this.spitzen;
     }
@@ -174,7 +187,18 @@ public class Player extends BaseObject {
         this.achtzehnGesagt = achtzehnGesagt;
     }
     
+    @JsonIgnore
     public List<Card> getCards(){
         return this.cards;
+    }
+    
+    @JsonIgnore
+    public Table getTable(){
+        return this.table;
+    }
+    
+    @JsonIgnore
+    public void setTable(Table table){
+        this.table = table;
     }
 }

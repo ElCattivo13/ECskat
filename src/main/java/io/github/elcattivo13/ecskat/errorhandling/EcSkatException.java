@@ -35,6 +35,7 @@ public class EcSkatException extends Exception {
         RAMSCH_UNTER_DRUECKEN_VERBOTEN,
         HANDSPIEL_NOT_ALLOWED,
         PLAYER_NOT_READY,
-        NULLSPIEL_UEBERREIZT
+        NULLSPIEL_UEBERREIZT,
+        NO_WEBSOCKET
     }
 }

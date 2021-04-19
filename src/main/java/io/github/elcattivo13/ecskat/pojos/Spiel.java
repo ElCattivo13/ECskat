@@ -29,6 +29,7 @@ public class Spiel extends BaseObject {
     private final Player vorhand;
     private final Player mittelhand;
     private final Player hinterhand;
+    private final Player watcher;
     private LinkedList<Card> skat = new LinkedList<>();
     private Player werIstDran;
     private Action naechsteAktion;
@@ -43,7 +44,7 @@ public class Spiel extends BaseObject {
     private boolean re = false;
     private SpielResult sr = new SpielResult();
     
-    public Spiel(Table table, Player vorhand, Player mittelhand, Player hinterhand, CutPosition cutPosition) {
+    public Spiel(Table table, Player vorhand, Player mittelhand, Player hinterhand, Player watcher, CutPosition cutPosition) throws EcSkatException {
         super();
         this.table = table;
         this.vorhand = vorhand;
@@ -55,7 +56,7 @@ public class Spiel extends BaseObject {
         next(mittelhand, Action.REIZEN_SAGEN);
     }
     
-    private void kartenAusteilen(CutPosition cutPos) {
+    private void kartenAusteilen(CutPosition cutPos) throws EcSkatException {
         LinkedList<Card> deck = new LinkedList<>(Card.getDeck());
         Card.shuffleDeck(deck);
         Card.cutDeck(deck, cutPos);
@@ -84,16 +85,24 @@ public class Spiel extends BaseObject {
     private void next(Player spieler, Action action) {
         werIstDran = spieler;
         naechsteAktion = action;
-        // TODO notification via WebSocket
+        
+        SkatMessage msg = SkatMessage.of(WER_IST_DRAN)
+            .setSubject(werIstDran)
+            .setNaechsteAktion(naechsteAktion);
+        sendToTable(msg);
     }
     
     private void checkAction(Player spieler, Action action) throws EcSkatException {
         if (!werIstDran.equals(spieler)) {
-            throw new EcSkatException(Reason.NOT_YOUR_TURN);
+            throw new EcSkatException(NOT_YOUR_TURN);
         }
         if (naechsteAktion != action) {
             throw new EcSkatException(ILLEGAL_ACTION);
         }
+    }
+    
+    private void sendToTable(SkatMessage msg) throws EcSkatException {
+        getWebsocket().sendToPlayers(msg, table.getSpieler());
     }
     
     public Optional<SpielResult> reizenSagen(Player spieler, int reizwert) throws EcSkatException {
@@ -103,31 +112,36 @@ public class Spiel extends BaseObject {
         }
         if (reizwert > aktuellerReizwert.getValue()) {
             spieler.setAchtzehnGesagt(true);
-            next((aktuellerReizwert.getKey() != null) ? aktuellerReizwert.getKey() : vorhand, (!spieler.equals(vorhand)) ? Action.REIZEN_HOEREN : Action.SPIEL_ANSAGEN);
+            next(
+                (aktuellerReizwert.getKey() == null) ? vorhand : aktuellerReizwert.getKey(),
+                (!spieler.equals(vorhand)) ? Action.REIZEN_HOEREN : Action.SPIEL_ANSAGEN);
             aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, reizwert);
+            sendToTable(SkatMessage.of(AKTUELLER_REIZWERT).setReizwert(reizwert).setSubject(spieler));
         } else {
             // Spieler hat weggesagt
             if (spieler.equals(vorhand)) {
                 if (table.getSettings().isWithRamsch()) {
                     game = Game.RAMSCH;
                     gameLevel = GameLevel.NORMAL;
-                    vorhand.receiveCards(true, skat.poll(),skat.poll());
-                    next(vorhand, Action.RAMSCH_SKAT_WEITERREICHEN);
+                    sendToTable(SkatMessage.of(SPIEL_ANSAGE).setGame(Game.RAMSCH).setGameLevel(GameLevel.NORMAL));
+                    if (table.getSettings().isRamschSkatWeiterreichen()) {
+                        vorhand.receiveCards(true, skat.poll(),skat.poll());
+                        next(vorhand, Action.RAMSCH_SKAT_WEITERREICHEN);
+                    } else {
+                        next(vorhand, Action.KARTE_SPIELEN);
+                    }
                 } else {
                     SpielResult res = sr;
                     res.setEingemischt(true);
                     return Optional.of(res);
                 }
             } else if (spieler.equals(mittelhand)) {
-                werIstDran = hinterhand;
-                naechsteAktion = Action.REIZEN_SAGEN;
+                next(hinterhand, Action.REIZEN_SAGEN);
             } else if (spieler.equals(hinterhand)) {
                 if (aktuellerReizwert.getKey() != null) {
-                    naechsteAktion = Action.SPIEL_ANSAGEN;
-                    werIstDran = aktuellerReizwert.getKey();
+                    next(aktuellerReizwert.getKey(), Action.SPIEL_ANSAGEN);
                 } else {
-                    naechsteAktion = Action.REIZEN_SAGEN;
-                    werIstDran = vorhand;
+                    next(vorhand, Action.REIZEN_SAGEN);
                 }
             } else {
                 throw new EcSkatException(UNEXPECTED_PLAYER);
@@ -170,6 +184,7 @@ public class Spiel extends BaseObject {
             spieler.setAchtzehnGesagt(true);
             next(aktuellerReizwert.getKey(), Action.REIZEN_SAGEN);
             aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, aktuellerReizwert.getValue());
+            sendToTable(SkatMessage.of(AKTUELLER_REIZWERT).setReizwert(aktuellerReizwert.getValue()).setSubject(spieler));
         } else {
             // Spieler hat weggesagt
             next(hinterhand, (aktuellerReizwert.getKey() == mittelhand) ? Action.REIZEN_SAGEN : Action.SPIEL_ANSAGEN);
@@ -179,6 +194,7 @@ public class Spiel extends BaseObject {
     public void skatAufnehmen(Player spieler) throws EcSkatException {
         checkAction(spieler, Action.SPIEL_ANSAGEN);
         spieler.receiveCards(true, skat.poll(), skat.poll());
+        sendToTable(SkatMessage.of(SKAT_AUFGENOMMEN).setSubject(spieler));
     }
     
     public void spielAnsagen(Player spieler, Game game, GameLevel gameLevel, List<Card> gedrueckteKarten) throws EcSkatException {
@@ -197,8 +213,8 @@ public class Spiel extends BaseObject {
         }
         spieler.skatDruecken(gedrueckteKarten);
         this.aktuellerStich = new Stich(game);
-        this.werIstDran = vorhand;
-        this.naechsteAktion = Action.KARTE_SPIELEN;
+        next(vorhand, Action.KARTE_SPIELEN);
+        sendToTable(SkatMessage.of(SPIEL_ANSAGE).setGame(game).setGameLevel(gameLevel));
     }
     
     public Optional<SpielResult> karteSpielen(Player spieler, Card karte) throws EcSkatException {
@@ -338,6 +354,7 @@ public class Spiel extends BaseObject {
             throw new EcSkatException(ILLEGAL_ACTION);
         }
         kontra = true;
+        sendToTable(SkatMessage.of(KONTRA_GESAGT).setSubject(spieler));
     }
     
     public void reSagen(Player spieler) throws EcSkatException {
@@ -352,6 +369,7 @@ public class Spiel extends BaseObject {
             throw new EcSkatException(ILLEGAL_ACTION);
         }
         re = true;
+        sendToTable(SkatMessage.of(RE_GESAGT).setSubject(spieler));
     }
     
     public void ansageErhoehen(Player spieler, GameLevel gameLevel) throws EcSkatException {
@@ -366,7 +384,14 @@ public class Spiel extends BaseObject {
             throw new EcSkatException(ILLEGAL_ACTION);
         }
         this.gameLevel = gameLevel;
+        sendToTable(SkatMessage.of(ANSAGE_ERHOEHEN).setGameLevel(gameLevel));
     }
+    
+    
+    
+    
+    
+    
     
 	public LinkedList<Card> getSkat() {
 		return skat;
