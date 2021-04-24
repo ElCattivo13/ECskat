@@ -13,4 +13,18 @@ public class GreetingResource {
     public String hello() {
         return "Hello RESTEasy!!!";
     }
+    
+    @GET
+    public Response streamExample(){
+        StreamingOutput stream = out -> {
+            Writer writer = new BufferedWriter(new OutputStreamWriter(out));
+            someStreamData().forEach(i -> writer.write(i + " "));
+            writer.flush();
+        };
+        return Response.ok(stream).build();
+    }
+    
+    private Stream<Integer> someStreamData() {
+        return Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    }
 }

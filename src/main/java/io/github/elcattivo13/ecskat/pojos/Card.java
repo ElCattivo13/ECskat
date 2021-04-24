@@ -19,6 +19,10 @@ public class Card {
         this.blatt = blatt;
     }
     
+    public static Card of(Farbe farbe, Blatt, blatt) {
+        return new Card(farbe, blatt);
+    }
+    
     public int punkte() {
         return blatt.wert;
     }
