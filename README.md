@@ -82,13 +82,3 @@ REST is easy peasy with this Hello World RESTEasy resource.
 - Ideen für Authentifizierung (KeyCloak?)
 - Datenbankanbindung
 
-
-****
-
-Notizen
-
-wo brauche ich websocket nachrichtenq
-1. (an einen spieler) spieler bekommt karten (austeilen, skat aufnehmen)
-2. (alle spieler am tisch) spieler x hat gesagt (int reizwert)
-3. (alle spieler am tisch) spieler x hat gehört (boolean ja)
-4. (alle spieler am tisch) spieler x hat Ansage gemacht (Spiel, kontra, re, Spielerhöhung)
