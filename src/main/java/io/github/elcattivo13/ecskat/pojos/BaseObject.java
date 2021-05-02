@@ -1,8 +1,15 @@
 package io.github.elcattivo13.ecskat.pojos;
 
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.NO_WEBSOCKET;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.websocket.SkatWebsocket;
 
 public class BaseObject implements Serializable {
     
@@ -21,7 +28,7 @@ public class BaseObject implements Serializable {
     @JsonIgnore
     public SkatWebsocket getWebsocket() throws EcSkatException {
         if (this.websocket == null) {
-            throw new EcSkatException(NO_WEBSOCKET)
+            throw new EcSkatException(NO_WEBSOCKET);
         }
         return this.websocket;
     }

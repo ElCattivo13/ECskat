@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class Card {
     
@@ -19,7 +20,7 @@ public class Card {
         this.blatt = blatt;
     }
     
-    public static Card of(Farbe farbe, Blatt, blatt) {
+    public static Card of(Farbe farbe, Blatt blatt) {
         return new Card(farbe, blatt);
     }
     

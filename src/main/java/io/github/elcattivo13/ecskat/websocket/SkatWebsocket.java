@@ -1,5 +1,6 @@
 package io.github.elcattivo13.ecskat.websocket;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,6 +11,12 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.github.elcattivo13.ecskat.pojos.Player;
+
 import javax.websocket.Session;
 
 @ServerEndpoint("/ws/{userId}")         
@@ -39,17 +46,17 @@ public class SkatWebsocket {
     }
 
     @OnMessage
-    public void onMessage(SkatMessage message, @PathParam("userId") String userId) {
+    public void onMessage(String message, @PathParam("userId") String userId) {
         if (message == null) {
             // TODO errorhandling
         }
-        switch (message.getKey()) {
-            case xxx: 
-                // do something
-                break;
-            default:
-                log.warn("Unknown message key: {}. Ignoring message!", message.getKey());
-        }
+//        switch (message.getKey()) {
+//            case SKAT_AUFGENOMMEN: 
+//                // do something
+//                break;
+//            default:
+//                log.warn("Unknown message key: {}. Ignoring message!", message.getKey());
+//        }
             
     }
 

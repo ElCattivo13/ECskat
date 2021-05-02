@@ -2,6 +2,9 @@ package io.github.elcattivo13.ecskat.pojos;
 
 import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.CARD_NOT_PRESENT;
 import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.INVALID_SKAT_SIZE;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.KARTEN_BEKOMMEN;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.TABLE_JOINED;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.TABLE_LEFT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +14,10 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.elcattivo13.ecskat.beans.TableBean;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
-import io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason;
+import io.github.elcattivo13.ecskat.websocket.SkatMessage;
 
 public class Player extends BaseObject {
 
@@ -44,7 +48,7 @@ public class Player extends BaseObject {
             table.getSpieler());
     }
     
-    public void leaveTable(Table table) {
+    public void leaveTable(Table table) throws EcSkatException {
         table.removePlayer(this);
         setTable(null);
         getWebsocket().sendToPlayers(
@@ -58,7 +62,7 @@ public class Player extends BaseObject {
         }
         if (notify) {
             getWebsocket().sendToPlayer(
-                SkatMessage.of(Key.KARTEN_BEKOMMEN).setKarten(getCards()),
+                SkatMessage.of(KARTEN_BEKOMMEN).setKarten(getCards()),
                 this);
         }
     }
@@ -130,12 +134,12 @@ public class Player extends BaseObject {
         gewonneneStiche = new ArrayList<>();
         spitzen = 0;
         setStichErhalten(false);
-        serReady(false);
+        setReady(false);
         setAchtzehnGesagt(false);
     }
     
     public boolean karteGespielt() {
-        return cards.length() < 10;
+        return cards.size() < 10;
     }
     
     // TODO getter and setter

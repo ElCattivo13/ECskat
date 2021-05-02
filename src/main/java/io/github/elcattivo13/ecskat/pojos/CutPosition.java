@@ -1,5 +1,7 @@
 package io.github.elcattivo13.ecskat.pojos;
 
+import java.security.SecureRandom;
+
 /**
  * CutPosition.toInt() = n bedeutet, dass beim Abheben die obersten
  * n Karten abgehoben werden. Also muss n zwischen 4 und 28 (inklusive)

@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import io.github.elcattivo13.ecskat.beans.PlayerBean;
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.CutPosition;
 import io.github.elcattivo13.ecskat.pojos.Player;
 
 @Path("player")
@@ -78,7 +79,7 @@ public class PlayerResource {
     
     @PUT
     @Path("/cutposition/{pos}")
-    public PlayerResponse putCutposition(@CookieParam(USER_ID) String userId, @PathParam("pos") CutPostion pos) {
+    public PlayerResponse putCutposition(@CookieParam(USER_ID) String userId, @PathParam("pos") CutPosition pos) {
         try {
             playerBean.setCutPosition(userId, pos);
             return PlayerResponse.ok();

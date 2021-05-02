@@ -1,6 +1,7 @@
 package io.github.elcattivo13.ecskat.pojos;
 
 import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.*;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.SPIELRESULTAT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.websocket.SkatMessage;
 public class Table extends BaseObject {
 
 	private static final long serialVersionUID = 6060804946738803L;
@@ -82,11 +84,11 @@ public class Table extends BaseObject {
         indexGeber++;
     }
     
-    public void spielAbschliessen(SpielResult result) {
+    public void spielAbschliessen(SpielResult result) throws EcSkatException {
         addWertung(result);
         spieler.forEach(s -> s.reset());
         spiel = null;
-        sendToTable(SkatMessage.of(SPIELRESULTAT).setResultat(res.get()));
+        sendToTable(SkatMessage.of(SPIELRESULTAT).setResult(result));
     }
     
     
@@ -137,7 +139,7 @@ public class Table extends BaseObject {
 		builder.append("indexGeber=").append(indexGeber).append(", ");
 		if (spiel != null)
 			builder.append("spiel=").append(spiel).append(", ");
-		builder.!=append("]");
+		builder.append("]");
 		return builder.toString();
 	}
     

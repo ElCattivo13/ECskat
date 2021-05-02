@@ -21,6 +21,36 @@
         }
       }
     },
+    "/ecskat/player/cutposition/{pos}" : {
+      "put" : {
+        "parameters" : [ {
+          "name" : "pos",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CutPosition"
+          }
+        }, {
+          "name" : "userId",
+          "in" : "cookie",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PlayerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ecskat/player/findAll" : {
       "get" : {
         "responses" : {
@@ -250,6 +280,66 @@
         }
       }
     },
+    "/ecskat/table/kontrasagen/{tableId}" : {
+      "put" : {
+        "parameters" : [ {
+          "name" : "tableId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userId",
+          "in" : "cookie",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ecskat/table/resagen/{tableId}" : {
+      "put" : {
+        "parameters" : [ {
+          "name" : "tableId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userId",
+          "in" : "cookie",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ecskat/table/sagen/{tableId}/{reizwert}" : {
       "put" : {
         "parameters" : [ {
@@ -412,11 +502,8 @@
           "id" : {
             "type" : "string"
           },
-          "cards" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Card"
-            }
+          "achtzehnGesagt" : {
+            "type" : "boolean"
           },
           "cutPosition" : {
             "$ref" : "#/components/schemas/CutPosition"
@@ -430,17 +517,7 @@
           "name" : {
             "type" : "string"
           },
-          "playing" : {
-            "type" : "boolean"
-          },
           "ready" : {
-            "type" : "boolean"
-          },
-          "spitzen" : {
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "stichErhalten" : {
             "type" : "boolean"
           }
         }
@@ -492,6 +569,9 @@
           "hinterhand" : {
             "$ref" : "#/components/schemas/Player"
           },
+          "kontra" : {
+            "type" : "boolean"
+          },
           "letzterStich" : {
             "$ref" : "#/components/schemas/Stich"
           },
@@ -501,11 +581,17 @@
           "naechsteAktion" : {
             "$ref" : "#/components/schemas/Action"
           },
+          "re" : {
+            "type" : "boolean"
+          },
           "skat" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Card"
             }
+          },
+          "sr" : {
+            "$ref" : "#/components/schemas/SpielResult"
           },
           "sticheGespielt" : {
             "format" : "int32",
@@ -514,8 +600,61 @@
           "vorhand" : {
             "$ref" : "#/components/schemas/Player"
           },
+          "watcher" : {
+            "$ref" : "#/components/schemas/Player"
+          },
           "werIstDran" : {
             "$ref" : "#/components/schemas/Player"
+          }
+        }
+      },
+      "SpielResult" : {
+        "type" : "object",
+        "properties" : {
+          "alleinspieler" : {
+            "$ref" : "#/components/schemas/Player"
+          },
+          "ausgeteilteKarten" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/Card"
+              }
+            }
+          },
+          "eingemischt" : {
+            "type" : "boolean"
+          },
+          "game" : {
+            "$ref" : "#/components/schemas/Game"
+          },
+          "gameLevel" : {
+            "$ref" : "#/components/schemas/GameLevel"
+          },
+          "gespaltenes" : {
+            "type" : "boolean"
+          },
+          "punkteAlleinspieler" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "punkteGegenspieler" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "skat" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Card"
+            }
+          },
+          "wertungen" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "format" : "int32",
+              "type" : "integer"
+            }
           }
         }
       },
@@ -570,13 +709,16 @@
           "spiel" : {
             "$ref" : "#/components/schemas/Spiel"
           },
-          "spielStarted" : {
-            "type" : "boolean"
-          },
           "spieler" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Player"
+            }
+          },
+          "wertungen" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SpielResult"
             }
           }
         }
@@ -628,5 +770,4 @@
       }
     }
   }
-}
 }

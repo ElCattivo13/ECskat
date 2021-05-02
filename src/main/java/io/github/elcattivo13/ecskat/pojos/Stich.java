@@ -62,7 +62,7 @@ public class Stich {
         }
     }
     
-    private void checkCard(Player spieler, Card card) throws EcSkatException {
+    public void checkCard(Player spieler, Card card) throws EcSkatException {
         if (karte1 != null && !karte1.isGleicheFarbe(card, game) && spieler.hasCardWithSameColor(karte1, game)) {
             throw new EcSkatException(KARTE_NOT_ALLOWED);
         }

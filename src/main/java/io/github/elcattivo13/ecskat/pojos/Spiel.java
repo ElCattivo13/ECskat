@@ -1,6 +1,23 @@
 package io.github.elcattivo13.ecskat.pojos;
 
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.HANDSPIEL_NOT_ALLOWED;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.ILLEGAL_ACTION;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.ILLEGAL_REIZWERT;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.INVALID_SKAT_SIZE;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.NOT_YOUR_TURN;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.NULLSPIEL_UEBERREIZT;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.RAMSCH_UNTER_DRUECKEN_VERBOTEN;
+import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.UNEXPECTED_PLAYER;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.AKTUELLER_REIZWERT;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.ANSAGE_ERHOEHEN;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.KONTRA_GESAGT;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.RE_GESAGT;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.SKAT_AUFGENOMMEN;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.SPIELANSAGE;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.WER_IST_DRAN;
+
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,8 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
-
-import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.*;
+import io.github.elcattivo13.ecskat.websocket.SkatMessage;
 
 public class Spiel extends BaseObject {
 
@@ -50,6 +66,7 @@ public class Spiel extends BaseObject {
         this.vorhand = vorhand;
         this.mittelhand = mittelhand;
         this.hinterhand = hinterhand;
+        this.watcher = watcher;
         
         kartenAusteilen(cutPosition);
         
@@ -82,7 +99,7 @@ public class Spiel extends BaseObject {
         sr.putAusgeteilteKarten(hinterhand, new ArrayList<>(hinterhand.getCards()));
     }
     
-    private void next(Player spieler, Action action) {
+    private void next(Player spieler, Action action) throws EcSkatException {
         werIstDran = spieler;
         naechsteAktion = action;
         
@@ -116,14 +133,14 @@ public class Spiel extends BaseObject {
                 (aktuellerReizwert.getKey() == null) ? vorhand : aktuellerReizwert.getKey(),
                 (!spieler.equals(vorhand)) ? Action.REIZEN_HOEREN : Action.SPIEL_ANSAGEN);
             aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, reizwert);
-            sendToTable(SkatMessage.of(AKTUELLER_REIZWERT).setReizwert(reizwert).setSubject(spieler));
+            sendToTable(SkatMessage.of(AKTUELLER_REIZWERT).setAktuellerReizwert(reizwert).setSubject(spieler));
         } else {
             // Spieler hat weggesagt
             if (spieler.equals(vorhand)) {
                 if (table.getSettings().isWithRamsch()) {
                     game = Game.RAMSCH;
                     gameLevel = GameLevel.NORMAL;
-                    sendToTable(SkatMessage.of(SPIEL_ANSAGE).setGame(Game.RAMSCH).setGameLevel(GameLevel.NORMAL));
+                    sendToTable(SkatMessage.of(SPIELANSAGE).setGame(Game.RAMSCH).setGameLevel(GameLevel.NORMAL));
                     if (table.getSettings().isRamschSkatWeiterreichen()) {
                         vorhand.receiveCards(true, skat.poll(),skat.poll());
                         next(vorhand, Action.RAMSCH_SKAT_WEITERREICHEN);
@@ -184,7 +201,7 @@ public class Spiel extends BaseObject {
             spieler.setAchtzehnGesagt(true);
             next(aktuellerReizwert.getKey(), Action.REIZEN_SAGEN);
             aktuellerReizwert = new AbstractMap.SimpleEntry<>(spieler, aktuellerReizwert.getValue());
-            sendToTable(SkatMessage.of(AKTUELLER_REIZWERT).setReizwert(aktuellerReizwert.getValue()).setSubject(spieler));
+            sendToTable(SkatMessage.of(AKTUELLER_REIZWERT).setAktuellerReizwert(aktuellerReizwert.getValue()).setSubject(spieler));
         } else {
             // Spieler hat weggesagt
             next(hinterhand, (aktuellerReizwert.getKey() == mittelhand) ? Action.REIZEN_SAGEN : Action.SPIEL_ANSAGEN);
@@ -214,7 +231,7 @@ public class Spiel extends BaseObject {
         spieler.skatDruecken(gedrueckteKarten);
         this.aktuellerStich = new Stich(game);
         next(vorhand, Action.KARTE_SPIELEN);
-        sendToTable(SkatMessage.of(SPIEL_ANSAGE).setGame(game).setGameLevel(gameLevel));
+        sendToTable(SkatMessage.of(SPIELANSAGE).setGame(game).setGameLevel(gameLevel));
     }
     
     public Optional<SpielResult> karteSpielen(Player spieler, Card karte) throws EcSkatException {
@@ -235,7 +252,7 @@ public class Spiel extends BaseObject {
         return Optional.empty();
     }
     
-    private SpielResult spielAuswerten() {
+    private SpielResult spielAuswerten() throws EcSkatException {
         SpielResult res = sr;
         res.setGame(game);
         res.setGameLevel(gameLevel);
@@ -284,7 +301,7 @@ public class Spiel extends BaseObject {
                 (punkteAlleinspieler <= 60) ||
                 (gameLevel == GameLevel.SCHNEIDER_ANGESAGT && !schneider) ||
                 (gameLevel == GameLevel.SCHWARZ_ANGESAGT && !schwarz) ||
-                (gameLevel == GameLevel.OUVERT && !schwarz)) {
+                (gameLevel == GameLevel.OUVERT && !schwarz))) {
                 // verloren
                 int fallVerloren = gameLevel.gewinnStufeVerloren + alleinspieler.getSpitzen();
                 if (gameLevel.ordinal() <= GameLevel.HAND.ordinal() && alleinspielerSchneider) {
@@ -293,7 +310,7 @@ public class Spiel extends BaseObject {
                 if (gameLevel.ordinal() <= GameLevel.SCHNEIDER_ANGESAGT.ordinal() && alleinspielerSchwarz) {
                     fallVerloren++;
                 }
-                fallVerloren = Math.max(fallVerloren, Math.ceil(reizwert / game.grundwert));
+                fallVerloren = (int) Math.max(fallVerloren, Math.ceil(reizwert / game.grundwert));
                 //
                 res.putWertung(alleinspieler, faktorKontraRe * faktorVerloren * game.grundwert * fallVerloren);
                 gegenspieler.forEach(p -> res.putWertung(p, zusatzPunkteVerloren));
@@ -308,7 +325,7 @@ public class Spiel extends BaseObject {
         return res;
     }
     
-    private SpielResult spielAuswertenRamsch(SpielResult res) {
+    private SpielResult spielAuswertenRamsch(SpielResult res) throws EcSkatException {
         
         letzterStich.getWinner().receiveCards(false, skat.get(0), skat.get(1));
         letzterStich.getWinner().skatDruecken(this.skat);
@@ -482,10 +499,13 @@ public class Spiel extends BaseObject {
 		return hinterhand;
 	}
     
-  public boolean isKontra(){
-    return this.kontra;
-  }
-    
-    
+	public boolean isKontra(){
+		return this.kontra;
+	}
+
+	public Player getWatcher() {
+		return watcher;
+	}
+	
 }
 

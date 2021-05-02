@@ -1,12 +1,16 @@
 package io.github.elcattivo13.ecskat.beans;
 
 import java.util.List;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.READY;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.CutPosition;
 import io.github.elcattivo13.ecskat.pojos.Player;
+import io.github.elcattivo13.ecskat.websocket.SkatMessage;
+import io.github.elcattivo13.ecskat.websocket.SkatWebsocket;
 
 @RequestScoped // @Stateless TODO welche Annotation in Quarkus? @RequestScoped
 public class PlayerBean {

@@ -1,10 +1,27 @@
 package io.github.elcattivo13.pojos;
 
-import static io.github.elcattivo13.pojos.Farbe.*;
-import static io.github.elcattivo13.pojos.Blatt.*;
+import static io.github.elcattivo13.ecskat.pojos.Farbe.*;
+import static io.github.elcattivo13.ecskat.pojos.Blatt.*;
 
+import io.github.elcattivo13.ecskat.pojos.Card;
+import io.github.elcattivo13.ecskat.pojos.CutPosition;
+import io.github.elcattivo13.ecskat.pojos.Game;
 import io.quarkus.test.junit.QuarkusTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @QuarkusTest
 public class CardTest {
@@ -31,25 +48,25 @@ public class CardTest {
         List<Card> deck = Card.getDeck();
         Set<Card> deckSet = new HashSet<>(deck);
         
-        assert(32, deck.size());
-        assert(32, deckSet.size());
+        assertEquals(32, deck.size());
+        assertEquals(32, deckSet.size());
         
         deckSet.addAll(deck);
-        assert(32, deckSet.size());
+        assertEquals(32, deckSet.size());
     }
     
     @Test
     public void testPunkte() {
         
-        assert(0, Card.of(EICHEL, SIEBEN).punkte());
-        assert(0, Card.of(GRUEN, NEUN).punkte());
-        assert(2, Card.of(EICHEL, UNTER).punkte());
-        assert(3, Card.of(SCHELL, OBER).punkte());
-        assert(4, Card.of(HERZ, KOENIG).punkte());
-        assert(10, Card.of(SCHELL, ZEHN).punkte());
-        assert(11, Card.of(GRUEN, ASS).punkte());
+        assertEquals(0, Card.of(EICHEL, SIEBEN).punkte());
+        assertEquals(0, Card.of(GRUEN, NEUN).punkte());
+        assertEquals(2, Card.of(EICHEL, UNTER).punkte());
+        assertEquals(3, Card.of(SCHELL, OBER).punkte());
+        assertEquals(4, Card.of(HERZ, KOENIG).punkte());
+        assertEquals(10, Card.of(SCHELL, ZEHN).punkte());
+        assertEquals(11, Card.of(GRUEN, ASS).punkte());
         
-        assert(120, Card.getDeck().stream().mapToInt(Card::punkte).sum());
+        assertEquals(120, Card.getDeck().stream().mapToInt(Card::punkte).sum());
     }
     
     @Test
@@ -69,13 +86,13 @@ public class CardTest {
         assertTrue(Card.of(HERZ, ASS).isTrumpf(Game.HERZ));
         assertTrue(Card.of(SCHELL, NEUN).isTrumpf(Game.SCHELL));
         
-        assert(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL)).size());
-        assert(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL_HAND)).size());
-        assert(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL_OUVERT)).size());
-        assert(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL_OUVERT_HAND)).size());
-        assert(4, deck.stream().filter(c -> c.isTrumpf(Game.GRAND)).size());
-        assert(4, deck.stream().filter(c -> c.isTrumpf(Game.RAMSCH)).size());
-        assert(11, deck.stream().filter(c -> c.isTrumpf(Game.HERZ)).size());
+        assertEquals(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL)).count());
+        assertEquals(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL_HAND)).count());
+        assertEquals(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL_OUVERT)).count());
+        assertEquals(0, deck.stream().filter(c -> c.isTrumpf(Game.NULL_OUVERT_HAND)).count());
+        assertEquals(4, deck.stream().filter(c -> c.isTrumpf(Game.GRAND)).count());
+        assertEquals(4, deck.stream().filter(c -> c.isTrumpf(Game.RAMSCH)).count());
+        assertEquals(11, deck.stream().filter(c -> c.isTrumpf(Game.HERZ)).count());
         
     }
     
@@ -87,11 +104,11 @@ public class CardTest {
         }
         
         assertTrue(Card.of(EICHEL, ACHT).isGleicheFarbe(Card.of(EICHEL, UNTER), Game.EICHEL));
-        assertTrue(Card.of(EICHEL, ACHT).isGleicheFarbe(Card.of(EICHEL, UNTER), Game.NULL);
+        assertTrue(Card.of(EICHEL, ACHT).isGleicheFarbe(Card.of(EICHEL, UNTER), Game.NULL));
         assertFalse(Card.of(EICHEL, ACHT).isGleicheFarbe(Card.of(EICHEL, UNTER), Game.HERZ));
         
-        assert(11, Card.getDeck().stream().filter(c -> c.isGleicheFarbe(Card.of(GRUEN, SIEBEN), Game.GRUEN)).size());
-        assert(7, Card.getDeck().stream().filter(c -> c.isGleicheFarbe(Card.of(GRUEN, SIEBEN), Game.HERZ)).size());
+        assertEquals(11, Card.getDeck().stream().filter(c -> c.isGleicheFarbe(Card.of(GRUEN, SIEBEN), Game.GRUEN)).count());
+        assertEquals(7, Card.getDeck().stream().filter(c -> c.isGleicheFarbe(Card.of(GRUEN, SIEBEN), Game.HERZ)).count());
         
     }
     
@@ -115,11 +132,11 @@ public class CardTest {
         assertTrue(cNull.compare(Card.of(EICHEL, ZEHN), Card.of(EICHEL, OBER)) < 0);
         assertTrue(cNull.compare(Card.of(EICHEL, OBER), Card.of(EICHEL, UNTER)) > 0);
         
-        assertTrue(cHerz.compare(Catd.of(SCHELL, ASS), Card.of(GRUEN, ZEHN)) > 0);
-        assertTrue(cHerz.compare(Catd.of(GRUEN, ZEHN), Card.of(SCHELL, ASS)) > 0);
-        assertTrue(cHerz.compare(Catd.of(SCHELL, ASS), Card.of(HERZ, ACHT)) < 0);
-        assertTrue(cHerz.compare(Catd.of(SCHELL, UNTER), Card.of(HERZ, ACHT)) > 0);
-        assertTrue(cHerz.compare(Catd.of(HERZ, ACHT), Card.of(SCHELL, UNTER)) < 0);
+        assertTrue(cHerz.compare(Card.of(SCHELL, ASS), Card.of(GRUEN, ZEHN)) > 0);
+        assertTrue(cHerz.compare(Card.of(GRUEN, ZEHN), Card.of(SCHELL, ASS)) > 0);
+        assertTrue(cHerz.compare(Card.of(SCHELL, ASS), Card.of(HERZ, ACHT)) < 0);
+        assertTrue(cHerz.compare(Card.of(SCHELL, UNTER), Card.of(HERZ, ACHT)) > 0);
+        assertTrue(cHerz.compare(Card.of(HERZ, ACHT), Card.of(SCHELL, UNTER)) < 0);
         
     }
     
@@ -131,9 +148,9 @@ public class CardTest {
         Card c2 = Card.of(deck.get(2).farbe, deck.get(2).blatt);
         Card c3 = Card.of(deck.get(3).farbe, deck.get(3).blatt);
         
-        deck.shuffleDeck();
+        Card.shuffleDeck(deck);
         
-        assert(32, deck.size());
+        assertEquals(32, deck.size());
         assertFalse(
             deck.get(0).equals(c0) &&
             deck.get(1).equals(c1) &&
@@ -144,7 +161,7 @@ public class CardTest {
     @Test
     public void testCutDeck() {
         List<Card> deck = Card.getDeck();
-        deck.shuffleDeck();
+        Card.shuffleDeck(deck);
         List<Integer> deckInts = deck.stream().map(CardTest::toInt).collect(Collectors.toList());
         
         Card.cutDeck(deck, CutPosition.TOP);
@@ -159,6 +176,6 @@ public class CardTest {
     }
     
     private static int toInt(Card card) {
-        return 8 * card.farbe.ordinal() + blatt.ordinal();
+        return 8 * card.farbe.ordinal() + card.blatt.ordinal();
     }
 }

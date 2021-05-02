@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Singleton;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 import io.github.elcattivo13.ecskat.pojos.Player;

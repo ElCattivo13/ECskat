@@ -2,6 +2,7 @@ package io.github.elcattivo13.ecskat.beans;
 
 import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.PLAYER_NOT_AT_TABLE;
 import static io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason.SPIEL_ALREADY_STARTED;
+import static io.github.elcattivo13.ecskat.websocket.SkatMessage.Key.NEW_TABLE;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,8 @@ import io.github.elcattivo13.ecskat.pojos.Spiel;
 import io.github.elcattivo13.ecskat.pojos.SpielResult;
 import io.github.elcattivo13.ecskat.pojos.Table;
 import io.github.elcattivo13.ecskat.pojos.TableSettings;
+import io.github.elcattivo13.ecskat.websocket.SkatMessage;
+import io.github.elcattivo13.ecskat.websocket.SkatWebsocket;
 
 @RequestScoped //@Stateless TODO welche Annotation in Quarkus? @RequestScoped
 public class TableBean {
@@ -64,7 +67,9 @@ public class TableBean {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         Card karte = new Card(Farbe.of(farbe), Blatt.of(blatt));
         Optional<SpielResult> res = pts.spiel.karteSpielen(pts.player, karte);
-        res.ifPresent(pts.table::spielAbschliessen);
+        if (res.isPresent()) {
+        	pts.table.spielAbschliessen(res.get());
+        }
     }
     
     public void austeilen(String playerId, String tableId) throws EcSkatException {
@@ -75,7 +80,9 @@ public class TableBean {
     public void sagen(String playerId, String tableId, Integer reizwert) throws EcSkatException {
         PlayerTableSpiel pts = findPojosWithSpiel(playerId, tableId);
         Optional<SpielResult> res = pts.spiel.reizenSagen(pts.player, reizwert);
-        res.ifPresent(pts.table::spielAbschliessen);
+        if (res.isPresent()) {
+        	pts.table.spielAbschliessen(res.get());
+        }
     }
     
     public void hoeren(String playerId, String tableId, boolean ja) throws EcSkatException {
@@ -139,10 +146,6 @@ public class TableBean {
         } else {
             return t.getSpiel();
         }
-    }
-    
-    private void sendMessage(SkatMessage msg) {
-        
     }
     
     private static class PlayerTable {

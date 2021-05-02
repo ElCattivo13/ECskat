@@ -2,7 +2,7 @@ package io.github.elcattivo13.ecskat.pojos;
 
 
 
-enum GameLevel {
+public enum GameLevel {
     NORMAL(1,1),
     HAND (2,2),
     SCHNEIDER_ANGESAGT(3,4),

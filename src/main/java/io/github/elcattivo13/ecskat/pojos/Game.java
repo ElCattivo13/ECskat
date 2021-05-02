@@ -1,6 +1,6 @@
 package io.github.elcattivo13.ecskat.pojos;
 
-enum Game {
+public enum Game {
     GRAND(24),
     EICHEL(12),
     GRUEN(11),

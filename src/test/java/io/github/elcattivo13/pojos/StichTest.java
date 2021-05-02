@@ -1,10 +1,22 @@
 package io.github.elcattivo13.pojos;
 
-import static io.github.elcattivo13.pojos.Farbe.*;
-import static io.github.elcattivo13.pojos.Blatt.*;
+import static io.github.elcattivo13.ecskat.pojos.Blatt.*;
+import static io.github.elcattivo13.ecskat.pojos.Farbe.*;
 
-import io.quarkus.test.junit.QuarkusTest;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.pojos.Card;
+import io.github.elcattivo13.ecskat.pojos.Game;
+import io.github.elcattivo13.ecskat.pojos.Player;
+import io.github.elcattivo13.ecskat.pojos.Stich;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 public class StichTest {
@@ -15,8 +27,8 @@ public class StichTest {
     private Player player2;
     private Player player3;
     
-    @Before
-    public void setup() {
+    @BeforeEach
+    public void setup() throws EcSkatException {
         List<Player> players = createPlayers();
         player1 = players.get(0);
         player2 = players.get(1);
@@ -24,7 +36,7 @@ public class StichTest {
     }
     
     @Test
-    public void testCheckCard1() throws EcSkatExceptipn{
+    public void testCheckCard1() throws EcSkatException{
         
         Stich stich = new Stich(Game.GRUEN);
         
@@ -34,7 +46,7 @@ public class StichTest {
         stich.checkCard(player1, Card.of(HERZ, ASS));
         stich.checkCard(player1, Card.of(SCHELL, SIEBEN));
         
-        stich.cardPlayed(player1, )
+        //stich.cardPlayed(player1, )
         
         // zweite Karte, zugeben
         
@@ -43,7 +55,7 @@ public class StichTest {
     }
     
     @Test
-        public void testCheckCard1() throws EcSkatExceptipn{
+        public void testCheckCard2() throws EcSkatException{
             
             Stich stich = new Stich(Game.GRUEN);
             
@@ -53,7 +65,7 @@ public class StichTest {
             stich.checkCard(player1, Card.of(HERZ, ASS));
             stich.checkCard(player1, Card.of(SCHELL, SIEBEN));
             
-            stich.cardPlayed(player1, )
+            //stich.cardPlayed(player1, )
             
             // zweite Karte, zugeben
             
@@ -62,7 +74,7 @@ public class StichTest {
         }
     
     @Test
-    public void testCheckCard1() throws EcSkatExceptipn{
+    public void testCheckCard3() throws EcSkatException{
          
          Stich stich = new Stich(Game.GRUEN);
          
@@ -70,10 +82,10 @@ public class StichTest {
          stich.checkCard(player1, Card.of(EICHEL, OBER));
          stich.checkCard(player1, Card.of(GRUEN, UNTER));
          stich.checkCard(player1, Card.of(HERZ, ASS));
-         stich.checkCard(player1, Card.of(SCHELL, SIEBEN));@@@@@
+         stich.checkCard(player1, Card.of(SCHELL, SIEBEN));
      }
     
-    private List<Player> createPlayers() {
+    private List<Player> createPlayers() throws EcSkatException {
         Player p1 = new Player("P1");
         p1.receiveCards(false, 
             Card.of(GRUEN, SIEBEN)
