@@ -2,5 +2,5 @@
 pwd
 whoami
 chmod +x ../../../mvnw
-ls -la ../../../
+where java
 ../../../mvnw package
