@@ -1,5 +1,6 @@
 #!/bin/bash
 pwd
 whoami
+chmod +x ../../../mvnw
 ls -la ../../../
 ../../../mvnw package
