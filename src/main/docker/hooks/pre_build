@@ -2,5 +2,6 @@
 pwd
 whoami
 chmod +x ../../../mvnw
-where java
+which java
+java --version
 ../../../mvnw package
