@@ -1,6 +1,6 @@
 package io.github.elcattivo13.ecskat.pojos;
 
-import java.security.SecureRandom;
+import java.util.Random;
 
 /**
  * CutPosition.toInt() = n bedeutet, dass beim Abheben die obersten
@@ -19,7 +19,7 @@ public enum CutPosition {
     }
     
     public int toInt() {
-        SecureRandom random = new SecureRandom();
+        Random random = new Random();
         int i = random.nextInt(11); // zufallszahlen von 0 bis 10
         return base + i;
     }

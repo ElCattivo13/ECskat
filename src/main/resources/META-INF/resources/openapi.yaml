@@ -531,3 +531,23 @@ components:
         zusatzPunkteVerloren:
           format: int32
           type: integer
+       $ref: '#/components/schemas/Table'
+    TableSettings:
+      type: object
+      properties:
+        ramschAbrechnungAlle:
+          type: boolean
+        ramschSkatWeiterreichen:
+          type: boolean
+        ramschUnterDrueckenVerboten:
+          type: boolean
+        withRamsch:
+          type: boolean
+        zuViertOk:
+          type: boolean
+        zusatzPunkteGewonnen:
+          format: int32
+          type: integer
+        zusatzPunkteVerloren:
+          format: int32
+          type: integer

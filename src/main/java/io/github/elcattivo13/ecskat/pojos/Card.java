@@ -1,6 +1,6 @@
 package io.github.elcattivo13.ecskat.pojos;
 
-import java.security.SecureRandom;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,8 +9,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class Card {
-    
-    private static final SecureRandom random = new SecureRandom();
     
     public final Blatt blatt;
     public final Farbe farbe;
@@ -86,7 +84,7 @@ public class Card {
     }
     
     public static void shuffleDeck(List<Card> deck) {
-        Collections.shuffle(deck, random);
+        Collections.shuffle(deck);
     }
     
     public static int cutDeck(List<Card> deck, CutPosition pos) {
