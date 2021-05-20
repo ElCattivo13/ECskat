@@ -91,8 +91,11 @@ public class StichTest {
             Card.of(GRUEN, SIEBEN)
         );
         
+        Player p2 = new Player("P2");
+
+        Player p3 = new Player("P3");
         
-        return Arrays.asList(p1);
+        return Arrays.asList(p1, p2, p3);
     }
     
 }
