@@ -21,10 +21,10 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-    - name: Who am I
-      run: whoami
     - name: Change permission
       run: chmod +x ./mvnw
     - name: Build with Maven
       run: ./mvnw package
 #      run: mvn -B package -DskipTests --file pom.xml
+    - name: Build with Docker
+      run: docker build -f src/main/docker/Dockerfile.jvm -t quarkus/ecskat-jvm .
