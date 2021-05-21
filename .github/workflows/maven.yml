@@ -26,7 +26,7 @@ jobs:
     - name: Build with Maven
       run: ./mvnw package
     - name: Login to Docker-Hub
-      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
     - name: Build with Docker
       run: docker build -f src/main/docker/Dockerfile.jvm -t quarkus/ecskat-jvm .
     - name: Push docker image
