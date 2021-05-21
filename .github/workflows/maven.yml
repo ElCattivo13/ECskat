@@ -30,5 +30,7 @@ jobs:
       run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
     - name: Build with Docker
       run: docker build -f src/main/docker/Dockerfile.jvm -t quarkus/ecskat-jvm .
+    - name: List all local images
+      run: docker image ls
     - name: Push docker image
-      run: docker push quarkus/ecskat-jvm:latest
+      run: docker push elcattivo13/ecskat:latest
