@@ -31,7 +31,7 @@ jobs:
 
     # Configure Docker to use the gcloud command-line tool as a credential helper for authentication
     - name: Configure Docker
-    - run: |-
+      run: |-
         gcloud --quiet auth configure-docker
 
     - name: Set up JDK 11
