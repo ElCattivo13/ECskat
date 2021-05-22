@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Java CI with Maven
+name: CI/CD with Maven, Docker and gcloud CLI
 
 on:
   push:
@@ -11,7 +11,15 @@ on:
   workflow_dispatch:
 
 env:
+  # https://cloud.google.com/container-registry/docs/overview
+  GCR_HOSTNAME: eu.gcr.io
+
   PROJECT_ID: ${{ secrets.GCR_PROJECT }}
+
+  IMAGE: ecskat
+  IMAGE_TAG: latest
+  # IMAGE_TAG: $GITHUB_SHA
+
 
 jobs:
   setup-build-publish-deploy:
@@ -53,7 +61,18 @@ jobs:
 #      run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
     - name: Build with Docker
-      run: docker build -f src/main/docker/Dockerfile.jvm -t elcattivo13/ecskat .
+      run: |-
+        docker build \
+          -f src/main/docker/Dockerfile.jvm \
+          --tag "$GCR_HOSTNAME/$PROJECT_ID/$IMAGE:$IMAGE_TAG" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          .
 
 #    - name: Push docker image
 #      run: docker push elcattivo13/ecskat:latest
+ 
+   # Push the Docker image to Google Container Registry
+    - name: Publish
+      run: |-
+        docker push "$GCR_HOSTNAME/$PROJECT_ID/$IMAGE:$IMAGE_TAG"
