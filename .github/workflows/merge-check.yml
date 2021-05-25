@@ -3,10 +3,11 @@
 
 name: Maven build before merge
 
+on:
 
 jobs:
   build:
-    name: Build
+    name: Build before merging
     runs-on: ubuntu-latest
     environment: production
 
