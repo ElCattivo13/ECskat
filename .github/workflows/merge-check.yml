@@ -4,6 +4,7 @@
 name: Maven build before merge
 
 on:
+  workflow_dispath:
 
 jobs:
   build:
