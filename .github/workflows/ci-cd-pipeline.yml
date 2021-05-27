@@ -72,4 +72,4 @@ jobs:
    # Push the Docker image to Google Container Registry
     - name: Publish
       run: |-
-        docker push "$GCR_HOSTNAME/$PROJECT_ID/$IMAGE:$IMAGE_TAG"
+        docker push -v "$GCR_HOSTNAME/$PROJECT_ID/$IMAGE:$IMAGE_TAG"
