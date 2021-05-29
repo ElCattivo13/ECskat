@@ -10,7 +10,7 @@ jobs:
     environment: production
 
     steps:
-    - name: Checkout
+    - name: Deploy to Cloud Run
       uses: actions/checkout@v2
 
 ​    - ​name​: ​Deploy to Cloud Run​
