@@ -11,11 +11,9 @@ jobs:
 
     steps:
     - name: Deploy to Cloud Run
-      uses: actions/checkout@v2
-
-​    - ​name​: ​Deploy to Cloud Run​
-  ​    uses​: ​google-github-actions/deploy-cloudrun@main​
-      ​with​:
+      id: deploy
+      uses: google-github-actions/deploy-cloudrun@main
+      with​:
         ​service​: ​${{ secrets.CLOUD_RUN_SERVICE }}
         ​image​: ​eu.gcr.io/${{ secrets.GCR_PROJECT }}/ecskat
         ​credentials​: ​${{ secrets.GCR_SA_KEY }}​
