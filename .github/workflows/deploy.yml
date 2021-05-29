@@ -13,7 +13,8 @@ jobs:
     - name: Deploy to Cloud Run
       id: deploy
       uses: google-github-actions/deploy-cloudrun@main
-      with​:
+      with:
+#      with​:
         ​service​: ​${{ secrets.CLOUD_RUN_SERVICE }}
         ​image​: eu.gcr.io/${{ secrets.GCR_PROJECT }}/ecskat
         ​credentials​: ​${{ secrets.GCR_SA_KEY }}
