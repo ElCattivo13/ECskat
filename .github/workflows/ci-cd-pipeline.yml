@@ -68,9 +68,6 @@ jobs:
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
           .
-
-#    - name: Push docker image
-#      run: docker push elcattivo13/ecskat:latest
  
    # Push the Docker image to Google Container Registry
     - name: Publish
