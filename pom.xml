@@ -146,7 +146,7 @@
                   <goal>generate</goal>
                 </goals>
                 <configuration>
-                  <inputSpec>${project.basedir}/src/main/resources/META-INF/resources/openapi.yaml</inputSpec>
+                  <inputSpec>${project.basedir}/src/main/resources/META-INF/resources/openapi.json</inputSpec>
                   <generatorName>typescript-angular</generatorName>
                   <output>${project.basedir}/spa/src/app/modules/api</output>
                 </configuration>
