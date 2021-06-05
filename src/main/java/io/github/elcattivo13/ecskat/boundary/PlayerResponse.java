@@ -8,23 +8,23 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
+import io.github.elcattivo13.ecskat.errorhandling.EcSkatException.Reason;
 import io.github.elcattivo13.ecskat.pojos.Player;
 
-public class PlayerResponse {
-    private final String status;
+public class PlayerResponse extends BaseResponse {
+    
     private List<Player> players;
     
-    
-    private PlayerResponse(String status) {
-        this.status = status;
+    private PlayerResponse(boolean success, Reason reason) {
+        super(success, reason);
     }
     
     public static PlayerResponse ok() {
-        return new PlayerResponse("OK");
+        return new PlayerResponse(true, null);
     }
     
     public static PlayerResponse fail(EcSkatException e) {
-        return new PlayerResponse(e.getReason().toString());
+        return new PlayerResponse(false, e.getReason());
     }
     
     
@@ -54,9 +54,5 @@ public class PlayerResponse {
         this.players = players;
         return this;
     }
-
-	public String getStatus() {
-		return status;
-	}
     
 }

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import io.github.elcattivo13.ecskat.errorhandling.EcSkatException;
 import io.github.elcattivo13.ecskat.websocket.SkatMessage;
+
 public class Table extends BaseObject {
 
 	private static final long serialVersionUID = 6060804946738803L;
@@ -23,16 +24,10 @@ public class Table extends BaseObject {
     private Spiel spiel;
     private List<SpielResult> wertungen = new ArrayList<>();
     
-    public Table(String name) {
-        this(name, new TableSettings());
-        log.info("Table constructor without settings called");
-        
-    }
-    
     public Table(String name, TableSettings settings) {
         super();
         this.name = name;
-        this.settings = settings;
+        this.settings = settings != null ? settings : new TableSettings();
         this.spieler = new ArrayList<>();
         log.info("Table constructor with settings called: {}", settings);
     }

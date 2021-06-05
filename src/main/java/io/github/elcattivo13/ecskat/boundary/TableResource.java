@@ -56,8 +56,9 @@ public class TableResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public TableResponse createTable(@CookieParam(PlayerResource.USER_ID) String userId, @PathParam("name") String name, TableSettings settings) {
         try {
-            String tableId = tableBean.createTable(name, userId, settings);
-            return TableResponse.ok().setTableId(tableId);
+            return TableResponse
+                .ok()
+                .setTables(tableBean.createTable(name, userId, settings));
         } catch (EcSkatException e) {
             return TableResponse.fail(e);
         }
@@ -99,7 +100,7 @@ public class TableResource {
     
     private TableResponse hoeren(String userId, String tableId, boolean ja) {
         try {
-            tableBean.hoeren(userId, tableId, false);
+            tableBean.hoeren(userId, tableId, ja);
             return TableResponse.ok();
         } catch(EcSkatException e) {
             return TableResponse.fail(e);

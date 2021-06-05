@@ -39,19 +39,14 @@ public class TableBean {
     @Inject
     SkatWebsocket websocket;
     
-    public String createTable(String name, String creatorId, TableSettings settings) throws EcSkatException {
-        Table table;
+    public List<Table> createTable(String name, String creatorId, TableSettings settings) throws EcSkatException {
         log.info("Name: {}, creatorId: {}, settings: {}", name, creatorId, settings);
-        if (settings == null) {
-            table = new Table(name);
-        } else {
-            table = new Table(name, settings);
-        }
+        Table table = new Table(name, settings);
         table.setWebsocket(websocket);
         this.tableCache.addTable(table);
         findPlayer(creatorId).joinTable(table);
         websocket.sendToAll(SkatMessage.of(NEW_TABLE).setTable(table));
-        return table.getId();
+        return findAllTables();
     }
     
     public void joinTable(String playerId, String tableId) throws EcSkatException {
