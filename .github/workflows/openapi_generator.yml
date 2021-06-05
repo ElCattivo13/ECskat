@@ -21,7 +21,7 @@ jobs:
     - name: git_branch
       run: git branch -vv
     - name: git_checkout
-      run: git checkout $BRANCH 
+      run: git checkout ${{ env.GITHUB_REF }}
     - name: push
       uses: actions-x/commit@v2
 
