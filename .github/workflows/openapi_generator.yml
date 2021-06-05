@@ -10,9 +10,11 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
 
-    - name: Generate
-      run: mvn -P generate-api-classes
- 
+#    - name: Generate
+#      run: mvn -P generate-api-classes
+
+    - name: Echo
+      run: echo ${{ GITHUB_REF }}
     - name: push
       uses: actions-x/commit@v2
 
