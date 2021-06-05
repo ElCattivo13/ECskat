@@ -2,6 +2,9 @@ name: Generate client code with OpenAPI generato
 
 on:
   workflow_dispatch:
+
+env:
+  BRANCH: ${{ env.GITHUB_REF }}
     
 jobs:
   build:
@@ -14,9 +17,11 @@ jobs:
 #      run: mvn -P generate-api-classes
 
     - name: Echo
-      run: echo ${{ env.GITHUB_REF }}
+      run: echo $BRANCH
     - name: git_branch
       run: git branch -vv
+    - name: git_checkout
+      run: git checkout $BRANCH 
     - name: push
       uses: actions-x/commit@v2
 
