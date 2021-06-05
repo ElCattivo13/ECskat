@@ -15,6 +15,8 @@ jobs:
 
     - name: Echo
       run: echo ${{ env.GITHUB_REF }}
+    - name: git_branch
+      run: git branch -vv
     - name: push
       uses: actions-x/commit@v2
 
