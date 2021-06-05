@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-tablelist',
+  selector: 'ecskat-tablelist',
   templateUrl: './tablelist.component.html',
   styleUrls: ['./tablelist.component.css']
 })
