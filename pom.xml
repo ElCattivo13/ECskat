@@ -132,6 +132,7 @@
     <profile>
       <id>generate-api-classes</id>
       <build>
+        <defaultGoal>generate-sources</defaultGoal>
         <plugins>
           <plugin>
             <groupId>org.openapitools</groupId>
