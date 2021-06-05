@@ -12,12 +12,12 @@ jobs:
     steps:
     - name: Deploy to Cloud Run
       id: deploy
-      uses: google-github-actions/deploy-cloudrun@main
-      with:
-#      with​:
-        ​service​: ​${{ secrets.CLOUD_RUN_SERVICE }}
-        ​image​: eu.gcr.io/${{ secrets.GCR_PROJECT }}/ecskat
-        ​credentials​: ​${{ secrets.GCR_SA_KEY }}
-
-    - ​name​: ​Use Output
-      ​run​: ​curl "${{ steps.deploy.outputs.url }}"
+      run: whoami
+#      uses: google-github-actions/deploy-cloudrun@main
+#      with:
+#        ​service​: ​${{ secrets.CLOUD_RUN_SERVICE }}
+#        ​image​: eu.gcr.io/${{ secrets.GCR_PROJECT }}/ecskat
+#        ​credentials​: ​${{ secrets.GCR_SA_KEY }}
+#
+#    - ​name​: ​Use Output
+#      ​run​: ​curl "${{ steps.deploy.outputs.url }}"
