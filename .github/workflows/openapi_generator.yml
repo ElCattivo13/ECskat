@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  BRANCH: ${{ env.GITHUB_REF }}
+  BRANCH: $GITHUB_REF
     
 jobs:
   build:
