@@ -14,7 +14,7 @@ jobs:
 #      run: mvn -P generate-api-classes
 
     - name: Echo
-      run: echo ${{ GITHUB_REF }}
+      run: echo ${{ env.GITHUB_REF }}
     - name: push
       uses: actions-x/commit@v2
 
