@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'ecskat-footer',
+  selector: 'ecs-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'ecskat-table',
+  selector: 'ecs-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css']
 })
