@@ -9,16 +9,14 @@ import { TableComponent } from './components/table/table.component';
 import { TablelistComponent } from './components/tablelist.component.ts';
 
 @NgModule({
-  declarations: [
-    AppComponent,
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
     FooterComponent,
     HeaderComponent,
     TableComponent,
     TablelistComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
