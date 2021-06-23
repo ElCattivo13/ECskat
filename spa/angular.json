@@ -41,6 +41,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "outputPath": "../src/main/resources/META-INF/resources",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
