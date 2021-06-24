@@ -1,6 +1,6 @@
 
 .ecsHeader {
-    background-color: skyblue;
+    background-color: var(--header-color);
     position: absolute;
     top: 0;
     left: 0;

@@ -1,0 +1,9 @@
+
+.ecsFooter {
+    background-color: var(--footer-color);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--footer-height);
+}
