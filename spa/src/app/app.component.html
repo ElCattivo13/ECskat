@@ -1,6 +1,6 @@
-<ecs-header></ecs-header>
+<ecs-header (barsClicked)="toggleSideMenu($event)"></ecs-header>
 <div class="mainContent">
-    <ecs-tablelist></ecs-tablelist>
+    <ecs-tablelist [isOpen]="isSideMenuOpen"></ecs-tablelist>
     <ecs-table></ecs-table>
 </div>
 <ecs-footer></ecs-footer>
