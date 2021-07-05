@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'ecs-tablelist',
@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TablelistComponent implements OnInit {
 
-  @Input() isOpen: boolean;
+  @Input() isOpen = false;;
 
   constructor() { }
 
