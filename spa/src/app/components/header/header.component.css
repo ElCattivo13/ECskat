@@ -7,4 +7,9 @@
     width: 100%;
     height: var(--header-height);
     display: flex;
+    align-items: center;
+}
+
+fa-icon {
+    padding: 10px;
 }

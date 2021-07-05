@@ -8,7 +8,7 @@ import { TableComponent } from './components/table/table.component';
 import { TablelistComponent } from './components/tablelist/tablelist.component';
 import { StichComponent } from './components/stich/stich.component';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 @NgModule({
   declarations: [
@@ -29,6 +29,6 @@ import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 })
 export class AppModule { 
     constructor(library: FaIconLibrary) {
-        library.addIcon(faCoffee);
+        library.addIcons(faBars);
     }
 }
