@@ -1,5 +1,4 @@
 <div class="ecsHeader">
-  <fa-icon *ngIf="!sidebarOpen" icon="bars" size="2x" (click)="barsClick(true)"></fa-icon>
-  <fa-icon *ngIf="sidebarOpen" [icon]="faTimes" size="2x" (click)="barsClick(false)"></fa-icon>
-  <div>{{ isOpen }}</div>
+  <fa-icon *ngIf="!isOpen" icon="bars" size="2x" (click)="barsClick(true)"></fa-icon>
+  <fa-icon *ngIf="isOpen" [icon]="faTimes" size="2x" (click)="barsClick(false)"></fa-icon>
 </div>
