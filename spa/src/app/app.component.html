@@ -1,4 +1,4 @@
-<ecs-header (barsClicked)="toggleSideMenu($event)"></ecs-header>
+<ecs-header [isOpen]="isSideMenuOpen" (barsClicked)="toggleSideMenu($event)"></ecs-header>
 <mat-sidenav-container class="mainContent">
   <mat-sidenav [(opened)]="isSideMenuOpen">
     <ecs-tablelist [isOpen]="isSideMenuOpen"></ecs-tablelist>

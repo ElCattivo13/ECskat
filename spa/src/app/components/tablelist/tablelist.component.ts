@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class TablelistComponent implements OnInit {
 
-  @Input() isOpen = false;;
+  @Input() isOpen = false;
 
   constructor() { }
 

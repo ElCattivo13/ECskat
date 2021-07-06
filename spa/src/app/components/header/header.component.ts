@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
@@ -8,6 +8,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 })
 export class HeaderComponent implements OnInit {
 
+  @Input() isOpen = false;
   @Output() barsClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public sidebarOpen = false;
