@@ -13,7 +13,7 @@ import { Table } from './table';
 
 
 export interface TableResponse { 
-    status?: string;
+    success?: boolean;
     tableId?: string;
     tables?: Array<Table>;
 }

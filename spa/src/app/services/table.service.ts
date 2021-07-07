@@ -41,7 +41,7 @@ export class TableService implements OnInit {
         }
       },
       (error: any) => {
-      !  // TODO proper error handling
+        // TODO proper error handling
         console.error(error);
       });
   }
