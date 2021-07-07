@@ -1,1 +1,4 @@
 <p>tablelist works! {{ isOpen }}</p>
+<div *ngFor="let table of (tables | async)">
+  {{ table | json }}
+</div>

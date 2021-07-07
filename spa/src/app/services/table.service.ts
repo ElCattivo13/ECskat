@@ -1,26 +1,39 @@
-import { Injectable } from '@angular/core';
+import { Injectable , OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from "rxjs";
+import { TableApiService } from "table.api.service";
+import { Table } from "../modules/api/model/models";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TableService {
+export class TableService implements OnInit {
 
   private tables: BehaviorSubject<Table[]> = new BehaviorSubject([]);
 
   constructor(private apiService: TableApiService) { }
   
-  public tables$(): Observable<Table[]> {
+  ngOnInit() {
+    // TODO actually call api service
+    this.tables.next([
+      { name: "Table 1" },
+      { name: "Table 2" },
+      { name: "Table 3" },
+      { name: "Table 4" }
+    ]);
+  }
+  
+  get tables$(): Observable<Table[]> {
       return tables.asObservable();
   }
   
-  public addTable(table: Table) {
-      this.apiService.addTable(table).subscribe(
+  public addTable(tableName: string) {
+      this.apiService.addTable(tableName).subscribe(
           (response) => {
               if (response.success) {
                   if (response.tables) {
-                      tables.next(response.tables);
+                      this.tables.next(response.tables);
                   } else {
-                      tables.next([]);
+                      this.tables.next([]);
                   }
               } else {
                   // TODO proper error handling
