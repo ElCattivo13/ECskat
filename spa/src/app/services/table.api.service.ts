@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
-import { DefaultService as ApiService } from "../modules/api/api/defaultservice";
+import { DefaultService as ApiService } from "../modules/api/api/default.service";
 import { TableResponse } from "../modules/api/model/models";
 
 @Injectable({

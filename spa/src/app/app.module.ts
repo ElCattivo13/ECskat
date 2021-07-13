@@ -11,6 +11,8 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { TableCardComponent } from './components/table-card/table-card.component';
 
 @NgModule({
   declarations: [
@@ -19,14 +21,16 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 	  FooterComponent,
 	  HeaderComponent,
 	  TableComponent,
-	  TablelistComponent
+	  TablelistComponent,
+	  TableCardComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FontAwesomeModule,
     BrowserAnimationsModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
