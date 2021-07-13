@@ -1,10 +1,10 @@
 
 .mainContent {
-    position: absolute;
+/*    position: absolute; */
     width: 100%;
-    height: calc(100% - var(--header-height) - var(--footer-height));
-    top: var(--header-height);
-    left: 0;
+/*    height: calc(100% - var(--header-height) - var(--footer-height)); */
+/*    top: var(--header-height); */
+/*    left: 0; */
 }
 
 

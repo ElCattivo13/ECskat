@@ -1,4 +1,11 @@
-<div class="ecsHeader">
-  <fa-icon *ngIf="!isOpen" icon="bars" size="2x" (click)="barsClick(true)"></fa-icon>
-  <fa-icon *ngIf="isOpen" [icon]="faTimes" size="2x" (click)="barsClick(false)"></fa-icon>
-</div>
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="barsClick(true)">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>{{ 'app.title' | translate }}</span>
+</mat-toolbar>
+
+<!-- <div class="ecsHeader"> -->
+<!--  <fa-icon *ngIf="!isOpen" icon="bars" size="2x" (click)="barsClick(true)"></fa-icon> -->
+<!--  <fa-icon *ngIf="isOpen" [icon]="faTimes" size="2x" (click)="barsClick(false)"></fa-icon> -->
+<!-- </div> -->

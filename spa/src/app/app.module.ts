@@ -13,6 +13,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { TableCardComponent } from './components/table-card/table-card.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { TableCardComponent } from './components/table-card/table-card.component
     FontAwesomeModule,
     BrowserAnimationsModule,
     MatSidenavModule,
-    MatCardModule
+    MatCardModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
