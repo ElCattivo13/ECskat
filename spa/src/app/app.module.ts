@@ -19,6 +19,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -32,7 +35,8 @@ export function HttpLoaderFactory(http: HttpClient) {
 	  HeaderComponent,
 	  TableComponent,
 	  TablelistComponent,
-	  TableCardComponent
+	  TableCardComponent,
+	  UserProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +56,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatCardModule,
     MatToolbarModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

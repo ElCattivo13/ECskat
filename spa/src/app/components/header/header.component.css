@@ -13,3 +13,7 @@
 fa-icon {
     padding: 10px;
 }
+
+.header-spacer {
+  flex: 1 1 auto;
+}

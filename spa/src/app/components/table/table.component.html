@@ -1,1 +1,9 @@
-<p>table works!</p>
+<mat-sidenav-container class="mainContent">
+  <mat-sidenav [(opened)]="isSideNavOpen" (opened)="sideNavOpened()" (closed)="sideNavClosed()">
+    <ecs-tablelist [isOpen]="isSideNavOpen"></ecs-tablelist>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <p>table works!</p>
+    <p>{{ table | json }}</p>
+  </mat-sidenav-content>
+</mat-sidenav-container>

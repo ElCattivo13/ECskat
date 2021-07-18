@@ -1,3 +1,12 @@
+<div class="buttons">
+  <div class="margin-s">
+    <button mat-raised-button color="primary" (click)="addTable()">
+      <mat-icon>add</mat-icon>
+      {{ 'table-list.button.add' | translate }}
+    </button>
+  </div>
+</div>
+<mat-divider></mat-divider>
 <ng-container *ngFor="let table of (tables$ | async)">
   <ecs-table-card [table]="table"></ecs-table-card>
 </ng-container>

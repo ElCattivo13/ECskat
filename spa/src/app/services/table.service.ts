@@ -10,11 +10,12 @@ export class TableService {
   
   private initialized = false;
 
-  public tables: ReplaySubject<Table[]> = new ReplaySubject<Table[]>(1);
+  private tables: ReplaySubject<Table[]> = new ReplaySubject<Table[]>(1);
+  private joinedTable: BehaviorSubject<Table | null> = new BehaviorSubject<Table | null>(null);
 
   constructor(/*private apiService: TableApiService*/) { }
   
-  initialize() {
+  init() {
     if (!this.initialized) {
       this.initialized = true;
       // TODO actually call api service
@@ -29,6 +30,10 @@ export class TableService {
   
   get tables$(): Observable<Table[]> {
     return this.tables.asObservable();
+  }
+
+  get joinedTable$(): Observable<Table | null> {
+    return this.joinedTable.asObservable();
   }
   
   public addTable(tableName: string) {
@@ -49,5 +54,13 @@ export class TableService {
 //        // TODO proper error handling
 //        console.error(error);
 //      });
+  }
+
+  public joinTable(table: Table): void {
+    this.joinedTable.next(table);
+  }
+
+  public leaveTable(): void {
+    this.joinedTable.next(null);
   }
 }

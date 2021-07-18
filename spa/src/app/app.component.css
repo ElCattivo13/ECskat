@@ -1,11 +1,29 @@
+.rootContent {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
 
-.mainContent {
+.rootContent .header {
+  flex: 0 1 auto;
+}
+
+.rootComponent .table {
+  flex: 1 1 auto;
+  background-color: green;
+}
+
+.rootComponent .footer {
+  flex: 0 1 var(--footer-height);
+}
+
+/* .mainContent { */
 /*    position: absolute; */
-    width: 100%;
+/*    width: 100%; */
 /*    height: calc(100% - var(--header-height) - var(--footer-height)); */
 /*    top: var(--header-height); */
 /*    left: 0; */
-}
+/* } */
 
 
 

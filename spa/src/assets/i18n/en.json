@@ -1,5 +1,10 @@
 {
   "app": {
     "title": "ECskat"
+  },
+  "table-list": {
+    "button": {
+      "add":"Add Table"
+    }
   }
 }

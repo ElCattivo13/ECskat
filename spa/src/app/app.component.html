@@ -1,12 +1,9 @@
-<ecs-header [isOpen]="isSideMenuOpen" (barsClicked)="toggleSideMenu($event)"></ecs-header>
-<mat-sidenav-container class="mainContent">
-  <mat-sidenav [(opened)]="isSideMenuOpen">
-    <ecs-tablelist [isOpen]="isSideMenuOpen"></ecs-tablelist>
-  </mat-sidenav>
-  <mat-sidenav-content>
+<div class="rootContent">
+  <ecs-header class="header"></ecs-header>
+  <div class="table">
     <ecs-table></ecs-table>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-<ecs-footer></ecs-footer>
+  </div>
+  <ecs-footer class="footer"></ecs-footer>
+</div>
 
 <router-outlet></router-outlet>

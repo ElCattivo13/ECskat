@@ -1,11 +1,12 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button (click)="barsClick(true)">
-    <mat-icon>menu</mat-icon>
+  <button mat-icon-button (click)="barsClick(!isOpen)">
+    <mat-icon *ngIf="!isOpen">menu</mat-icon>
+    <mat-icon *ngIf="isOpen">close</mat-icon>
   </button>
+  <span class="header-spacer"></span>
   <span>{{ 'app.title' | translate }}</span>
+  <span class="header-spacer"></span>
+  <button mat-icon-button (click)="openPreferences()">
+    <mat-icon>settings</mat-icon>
+  </button>
 </mat-toolbar>
-
-<!-- <div class="ecsHeader"> -->
-<!--  <fa-icon *ngIf="!isOpen" icon="bars" size="2x" (click)="barsClick(true)"></fa-icon> -->
-<!--  <fa-icon *ngIf="isOpen" [icon]="faTimes" size="2x" (click)="barsClick(false)"></fa-icon> -->
-<!-- </div> -->

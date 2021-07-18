@@ -31,13 +31,16 @@ export class TablelistComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.tableService.initialize();
-
+    this.tableService.init();
     this.tables$ = this.tableService.tables$;
   }
 
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  public addTable(): void {
+
   }
 }
