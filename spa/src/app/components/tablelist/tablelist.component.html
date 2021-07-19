@@ -10,3 +10,22 @@
 <ng-container *ngFor="let table of (tables$ | async)">
   <ecs-table-card [table]="table"></ecs-table-card>
 </ng-container>
+<mat-divider></mat-divider>
+<span>{{ newTableName }}</span>
+
+<ng-template #add-table-dialog>
+  <h2 mat-dialog-title>{{ 'table-list.add-table-dialog.title' | translate }}</h2>
+  <div mat-dialog-content>
+    <p>{{ 'table-list.add-table-dialog.first-line' | translate }}</p
+    <mat-form-field>
+      <mat-label>{{ 'table-list.add-table-dialog.label-name' | translate }}</mat-label>
+      <input matInput [(ngModel)]="data.name">
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close>{{ app.button.cancel' | translate }}</button>
+    <button mat-button [mat-dialog-close]="data.name" cdkFocusInitial>
+      {{ 'app.button.ok | translate }}
+    </button>
+  </div>
+</ng-template>

@@ -3,6 +3,7 @@ import { Observable, of, ReplaySubject, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { Table } from "../../modules/api/model/models";
 import { TableService } from "../../services/table.service"
+import { MatDialog, MatDialogaRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'ecs-tablelist',
@@ -11,24 +12,16 @@ import { TableService } from "../../services/table.service"
 })
 export class TablelistComponent implements OnInit, OnDestroy {
 
+  @ViewChild('add-table-dialog') public addTableDialogTemplate: TemplateRef<any>;
+
   @Input() isOpen = false;
   
   private destroyed$: ReplaySubject<void> = new ReplaySubject<void>(1);
 
-  public tables: Table[] = [
-    { name: "Table 4" },
-    { name: "Table 5" },
-    { name: "Table 6" }
-  ];
-
-  public dummySubject: Subject<number> = new Subject<number>();
-  public dummyString: Observable<string> = of("a");
-
   public tables$: Observable<Table[]> = of(this.tables);
+  public newTableName = "";
 
-  constructor(private tableService: TableService, private cdr: ChangeDetectorRef) {
-    //this.tables$ = tableService.getTables();
-  }
+  constructor(private tableService: TableService, private matDialog: MatDialog) {}
 
   ngOnInit(): void {
     this.tableService.init();
@@ -40,7 +33,10 @@ export class TablelistComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  public addTable(): void {
-
+  public openAddTableDialog(): void {
+    const addTableDialog = this.matDialog.open(this.addTableDialogTemplate);
+    addTableDialog.afterClosed().subscribe(result => {
+      this.newTableName = result;
+    });
   }
 }

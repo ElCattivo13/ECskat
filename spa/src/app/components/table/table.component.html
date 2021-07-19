@@ -3,7 +3,14 @@
     <ecs-tablelist [isOpen]="isSideNavOpen"></ecs-tablelist>
   </mat-sidenav>
   <mat-sidenav-content>
-    <p>table works!</p>
-    <p>{{ table | json }}</p>
+    <div *ngIf="!table" class="noTableContainer">
+      <div class="noTableElement">
+        <span>{{ 'table.noTable.msg' | translate }}</span>
+      </div>
+    </div>
+    <div *ngIf="table">
+      <p>table works!</p>
+      <p>{{ table | json }}</p>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
