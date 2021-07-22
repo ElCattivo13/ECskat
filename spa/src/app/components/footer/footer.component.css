@@ -7,3 +7,8 @@
     width: 100%;
     height: var(--footer-height);
 }
+
+.ecsFooter2 {
+  background-color: var(--p-dark);
+  height: 100%;
+}

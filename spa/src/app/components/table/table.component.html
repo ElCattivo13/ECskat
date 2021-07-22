@@ -1,11 +1,14 @@
-<mat-sidenav-container class="mainContent">
+<mat-sidenav-container class="mainContent height100">
   <mat-sidenav [(opened)]="isSideNavOpen" (opened)="sideNavOpened()" (closed)="sideNavClosed()">
     <ecs-tablelist [isOpen]="isSideNavOpen"></ecs-tablelist>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div *ngIf="!table" class="noTableContainer">
+    <div *ngIf="!table" class="noTableContainer height100">
       <div class="noTableElement">
         <span>{{ 'table.noTable.msg' | translate }}</span>
+      </div>
+      <div class="noTableElement padding-top-s">
+        <button  mat-raised-button color="primary" (click)="sideNavOpened()">{{ 'table.noTable.openTablelist' | translate }}</button>
       </div>
     </div>
     <div *ngIf="table">

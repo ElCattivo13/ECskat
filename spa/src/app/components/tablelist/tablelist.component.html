@@ -1,6 +1,6 @@
 <div class="buttons">
   <div class="margin-s">
-    <button mat-raised-button color="primary" (click)="addTable()">
+    <button mat-raised-button color="primary" (click)="openAddTableDialog()">
       <mat-icon>add</mat-icon>
       {{ 'table-list.button.add' | translate }}
     </button>
@@ -13,19 +13,19 @@
 <mat-divider></mat-divider>
 <span>{{ newTableName }}</span>
 
-<ng-template #add-table-dialog>
+<ng-template #addTableDialog let-data="dialogData">
   <h2 mat-dialog-title>{{ 'table-list.add-table-dialog.title' | translate }}</h2>
   <div mat-dialog-content>
-    <p>{{ 'table-list.add-table-dialog.first-line' | translate }}</p
+    <p>{{ 'table-list.add-table-dialog.first-line' | translate }}</p>
     <mat-form-field>
       <mat-label>{{ 'table-list.add-table-dialog.label-name' | translate }}</mat-label>
       <input matInput [(ngModel)]="data.name">
     </mat-form-field>
   </div>
   <div mat-dialog-actions>
-    <button mat-button mat-dialog-close>{{ app.button.cancel' | translate }}</button>
+    <button mat-button mat-dialog-close>{{ 'app.button.cancel' | translate }}</button>
     <button mat-button [mat-dialog-close]="data.name" cdkFocusInitial>
-      {{ 'app.button.ok | translate }}
+      {{ 'app.button.ok' | translate }}
     </button>
   </div>
 </ng-template>

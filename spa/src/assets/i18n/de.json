@@ -1,10 +1,24 @@
 {
   "app": {
-    "title": "ECskat"
+    "title": "ECskat",
+    "button": {
+      "cancel": "Abbrechen",
+      "ok": "OK"
+    }
   },
   "table-list": {
     "button": {
       "add":"Neuer Tisch"
+    },
+    "add-table-dialog": {
+      "title": "Neuer Tisch",
+      "first-line": "Wie soll der Tisch heißen?"
+    }
+  },
+  "table": {
+    "noTable": {
+      "msg": "Kein Tisch ausgewählt.",
+      "openTablelist": "Tischliste öffnen"
     }
   }
 }

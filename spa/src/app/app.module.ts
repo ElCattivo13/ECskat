@@ -22,7 +22,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -45,6 +47,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     FontAwesomeModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    FormsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -60,7 +63,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     MatDialogModule,
     MatDividerModule,
-    MatDialogModule
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

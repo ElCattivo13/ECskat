@@ -1,5 +1,4 @@
 .mainContent {
-  height: 480px;
   background-color: beige;
 }
 
@@ -7,10 +6,9 @@
   display: flex;
   flex-flow: column;
   justify-content: center;
-  height: 100%;
 }
 
 .noTableElement {
   text-align: center;
-  width: 50%;
+  width: 100%;
 }

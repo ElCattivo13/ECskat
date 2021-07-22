@@ -1,10 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body { 
+  height: 100%;
+}
+body { 
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.height100 {
+  height: 100%
+}
+
+.width100 {
+  width: 100%;
+}
 
 .padding-s {
-  padding:84px;
+  padding: 8px;
+}
+
+.padding-top-s {
+  padding-top: 8px;
 }
 
 .margin-s {
