@@ -3,6 +3,8 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ReplaySubject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { SideNavService } from "../../services/side-nav.service";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { UserSettingsDialogComponent } from "../user-settings-dialog/user-settings-dialog.component";
 
 @Component({
   selector: 'ecs-header',
@@ -16,7 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   
   public faTimes = faTimes;
 
-  constructor(private sideNavService: SideNavService) { }
+  constructor(private sideNavService: SideNavService, private matDialog: MatDialog) { }
 
   ngOnInit(): void {
     this.sideNavService.isSideNavOpen$
@@ -37,8 +39,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public openPreferences(): void {
-    
+  public openUserSettingsDialog(): void {
+    const userSettingRef = this.matDialog.open(UserSettingsDialogComponent)
   }
 
 }
