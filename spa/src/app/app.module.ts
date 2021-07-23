@@ -25,6 +25,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { UserSettingsDialogComponent } from './components/user-settings-dialog/user-settings-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -39,7 +40,8 @@ export function HttpLoaderFactory(http: HttpClient) {
 	  TableComponent,
 	  TablelistComponent,
 	  TableCardComponent,
-	  UserProfileComponent
+	  UserProfileComponent,
+	  UserSettingsDialogComponent
   ],
   imports: [
     BrowserModule,
