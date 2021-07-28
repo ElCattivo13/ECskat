@@ -6,7 +6,19 @@
   <span class="header-spacer"></span>
   <span>{{ 'app.title' | translate }}</span>
   <span class="header-spacer"></span>
-  <button mat-icon-button (click)="openPreferences()">
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Icon menue for choosing language">
+    <mat-icon>language</mat-icon>
+  </button>
+  <mat-menu #menu>
+    <button mat-menu-item (click)="chooseLanguage('de')">
+      <span>DE</span>
+    </button>
+    <button mat-menu-item (click)="chooseLanguage('en')">
+      <span>EN</span>
+    </button>
+  </mat-menu>
+
+  <button mat-icon-button (click)="openUserSettingsDialog()">
     <mat-icon>settings</mat-icon>
   </button>
 </mat-toolbar>

@@ -5,6 +5,8 @@ import { takeUntil } from "rxjs/operators";
 import { SideNavService } from "../../services/side-nav.service";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { UserSettingsDialogComponent } from "../user-settings-dialog/user-settings-dialog.component";
+import { TranslateService } from "@ngx-translate/core";
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'ecs-header',
@@ -18,7 +20,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   
   public faTimes = faTimes;
 
-  constructor(private sideNavService: SideNavService, private matDialog: MatDialog) { }
+  constructor(
+    private sideNavService: SideNavService,
+    private matDialog: MatDialog,
+    private translateService: TranslateService,
+    private cookieService: CookieService
+  ){}
 
   ngOnInit(): void {
     this.sideNavService.isSideNavOpen$
@@ -41,6 +48,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   public openUserSettingsDialog(): void {
     const userSettingRef = this.matDialog.open(UserSettingsDialogComponent)
+  }
+
+  public chooseLanguage(lang: string): void {
+    this.translateService.use(lang);
+    this.cookieService.set("ecs-language", lang);
   }
 
 }

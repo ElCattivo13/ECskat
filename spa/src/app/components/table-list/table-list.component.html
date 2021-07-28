@@ -1,0 +1,20 @@
+<h3>{{ 'table-list.header.table' | translate }}</h3>
+<ng-container *ngFor="let table of (tables$ | async)">
+  <ecs-table-card [table]="table"></ecs-table-card>
+</ng-container>
+<div class="margin-s no-tables-msg" *ngIf="(tables$ | async)?.length == 0">
+  {{ 'table-list.noTables.msg' | translate }}
+</div>
+<div class="buttons">
+  <div class="margin-s">
+    <button mat-raised-button color="primary" (click)="openAddTableDialog()">
+      <mat-icon>add</mat-icon>
+      {{ 'table-list.button.add' | translate }}
+    </button>
+  </div>
+</div>
+<mat-divider></mat-divider>
+<h3>{{ 'table-list.header.player' | translate }}</h3>
+<ng-container *ngFor="let player of (players$ | async)">
+  <ecs-player-card [player]="player"></ecs-player-card>
+</ng-container>

@@ -1,6 +1,6 @@
 <mat-sidenav-container class="mainContent height100">
   <mat-sidenav [(opened)]="isSideNavOpen" (opened)="sideNavOpened()" (closed)="sideNavClosed()">
-    <ecs-tablelist [isOpen]="isSideNavOpen"></ecs-tablelist>
+    <ecs-table-list [isOpen]="isSideNavOpen"></ecs-table-list>
   </mat-sidenav>
   <mat-sidenav-content>
     <div *ngIf="!table" class="noTableContainer height100">

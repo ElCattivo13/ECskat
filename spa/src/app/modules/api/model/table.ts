@@ -17,6 +17,7 @@ import { Spiel } from './spiel';
 
 export interface Table { 
     id?: string;
+    creatorId?: string;
     indexGeber?: number;
     name?: string;
     settings?: TableSettings;

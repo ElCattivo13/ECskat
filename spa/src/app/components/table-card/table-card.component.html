@@ -1,5 +1,15 @@
 <div>
   <mat-card class="margin-s tischkarte">
-    <mat-card-title>{{ table?.name }}</mat-card-title>
+    <span>{{ table?.name }}</span>
+    <mat-card-actions align="end">
+      <div class="margin-right-s">
+        <button mat-mini-fab disabled="true">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <button mat-mini-fab [disabled]="joinedTableId && joinedTableId != table.id" (click)="joinTable(joinedTableId)">
+        <mat-icon [ngClass]="{ 'rotate180': table.id === joinedTableId}">input</mat-icon>
+      </button>
+    </mat-card-actions>
   </mat-card>
 </div>

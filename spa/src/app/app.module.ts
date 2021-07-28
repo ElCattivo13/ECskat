@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { TableComponent } from './components/table/table.component';
-import { TablelistComponent } from './components/tablelist/tablelist.component';
+import { TableListComponent } from './components/table-list/table-list.component';
 import { StichComponent } from './components/stich/stich.component';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
@@ -19,13 +19,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { UserSettingsDialogComponent } from './components/user-settings-dialog/user-settings-dialog.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { CookieService } from 'ngx-cookie-service';
+import { AddTableDialogComponent } from './components/add-table-dialog/add-table-dialog.component';
+import { PlayerCardComponent } from './components/player-card/player-card.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -38,10 +41,11 @@ export function HttpLoaderFactory(http: HttpClient) {
 	  FooterComponent,
 	  HeaderComponent,
 	  TableComponent,
-	  TablelistComponent,
+	  TableListComponent,
 	  TableCardComponent,
-	  UserProfileComponent,
-	  UserSettingsDialogComponent
+	  UserSettingsDialogComponent,
+	  AddTableDialogComponent,
+	  PlayerCardComponent
   ],
   imports: [
     BrowserModule,
@@ -66,9 +70,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatDialogModule,
     MatDividerModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatMenuModule
   ],
-  providers: [],
+  providers: [ CookieService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { 

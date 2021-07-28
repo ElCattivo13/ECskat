@@ -12,7 +12,15 @@
     },
     "add-table-dialog": {
       "title": "Neuer Tisch",
-      "first-line": "Wie soll der Tisch heißen?"
+      "first-line": "Wie soll der Tisch heißen?",
+      "label-name": "Neuer Tischname"
+    },
+    "noTables": {
+      "msg": "Kein Tisch vorhanden. Bitte einen neuen erstellen."
+    },
+    "header": {
+      "table": "Liste aller Tische",
+      "player": "Spielerliste"
     }
   },
   "table": {

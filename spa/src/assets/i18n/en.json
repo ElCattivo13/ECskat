@@ -12,7 +12,15 @@
     },
     "add-table-dialog": {
       "title": "Add Table",
-      "first-line": "What's the name of the new table?"
+      "first-line": "What's the name of the new table?",
+      "label-name": "New table name"
+    },
+    "noTables": {
+      "msg": "No tables present. Please create one!"
+    },
+    "header": {
+      "table": "Table list",
+      "player": "Player list"
     }
   },
   "table": {

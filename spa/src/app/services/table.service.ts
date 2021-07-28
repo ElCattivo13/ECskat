@@ -13,17 +13,17 @@ export class TableService {
   private tables: ReplaySubject<Table[]> = new ReplaySubject<Table[]>(1);
   private joinedTable: BehaviorSubject<Table | null> = new BehaviorSubject<Table | null>(null);
 
-  constructor(/*private apiService: TableApiService*/) { }
+  constructor(private apiService: TableApiService) { }
   
   init() {
     if (!this.initialized) {
       this.initialized = true;
       // TODO actually call api service
       setTimeout(() => this.tables.next([
-        { name: "Table 1" },
-        { name: "Table 2" },
-        { name: "Table 3" },
-        { name: "Table 4" }
+        { id: "A", creatorId: "1", name: "Table 1" },
+        { id: "B", creatorId: "1", name: "Table 2" },
+        { id: "C", creatorId: "2", name: "Table 3" },
+        { id: "D", creatorId: "3", name: "Table 4" }
       ]), 1000);
     }
   }
@@ -37,23 +37,25 @@ export class TableService {
   }
   
   public addTable(tableName: string) {
-//    this.apiService.addTable(tableName).subscribe(
-//      (response: TableResponse) => {
-//        if (response.success) {
-//          if (response.tables) {
-//            this.tables.next(response.tables);
-//          } else {
-//            this.tables.next([]);
-//          }
-//        } else {
-//          // TODO proper error handling
-//          console.error('Error while adding table', response);
-//        }
-//      },
-//      (error: any) => {
-//        // TODO proper error handling
-//        console.error(error);
-//      });
+    let currentTables: Table[] =[];
+    this.tables.subscribe(t => currentTables = t);
+    this.apiService.addTable(tableName, currentTables).subscribe(
+      (response: TableResponse) => {
+        if (response.success) {
+          if (response.tables) {
+            this.tables.next(response.tables);
+          } else {
+            this.tables.next([]);
+          }
+        } else {
+          // TODO proper error handling
+          console.error('Error while adding table', response);
+        }
+      },
+      (error: any) => {
+        // TODO proper error handling
+        console.error(error);
+      });
   }
 
   public joinTable(table: Table): void {
