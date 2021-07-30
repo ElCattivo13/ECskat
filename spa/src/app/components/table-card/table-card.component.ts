@@ -13,7 +13,7 @@ import { SideNavService } from "../../services/side-nav.service";
 export class TableCardComponent implements OnInit, OnDestroy {
 
   @Input() public table!: Table;
-  @Input() public playetId!: string;
+  @Input() public playerId!: string;
   public joinedTableId: string | undefined = "";
   private destroyed$: ReplaySubject<void> = new ReplaySubject<void>(1);
 
@@ -42,8 +42,10 @@ export class TableCardComponent implements OnInit, OnDestroy {
     }
   }
   
-  public deleteTable(tableId: string): void {
-    this.tableService.deleteTable(tableId);
+  public deleteTable(tableId: string | undefined): void {
+    if (tableId) {
+      this.tableService.deleteTable(tableId);
+    }
   }
 
 }

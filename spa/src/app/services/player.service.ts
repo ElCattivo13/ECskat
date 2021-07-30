@@ -36,7 +36,7 @@ export class PlayerService {
   }
   
   get whoami(): string {
-    this.cookieService.get("ecs-user-id");
+    return this.cookieService.get("ecs-user-id");
   }
   
   private processPlayerResponse(response$: Observable<PlayerResponse> , errorMsg: string): void {
