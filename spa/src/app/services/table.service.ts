@@ -18,13 +18,10 @@ export class TableService {
   init() {
     if (!this.initialized) {
       this.initialized = true;
-      // TODO actually call api service
-      setTimeout(() => this.tables.next([
-        { id: "A", creatorId: "1", name: "Table 1" },
-        { id: "B", creatorId: "1", name: "Table 2" },
-        { id: "C", creatorId: "2", name: "Table 3" },
-        { id: "D", creatorId: "3", name: "Table 4" }
-      ]), 1000);
+      
+      this.processTableResponse(
+        this.apiService.findAllTables(),
+        'Error while loading tables');
     }
   }
   
@@ -37,9 +34,19 @@ export class TableService {
   }
   
   public addTable(tableName: string) {
-    let currentTables: Table[] =[];
-    this.tables.subscribe(t => currentTables = t);
-    this.apiService.addTable(tableName, currentTables).subscribe(
+    this.processTableResponse(
+      this.apiService.addTable(tableName),
+      'Error while adding table');
+  }
+  
+  public deleteTable(tableId: string) {
+    this.processTableResponse(
+      this.apiService.deleteTable(tableId),
+      'Error while adding table');
+  }
+  
+  private processTableResponse(response$: Observable<TableResponse>, errorMsg: string): void {
+    response$.subscribe(
       (response: TableResponse) => {
         if (response.success) {
           if (response.tables) {
@@ -49,7 +56,7 @@ export class TableService {
           }
         } else {
           // TODO proper error handling
-          console.error('Error while adding table', response);
+          console.error(errorMsg, response);
         }
       },
       (error: any) => {

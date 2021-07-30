@@ -3,7 +3,7 @@
     <span>{{ table?.name }}</span>
     <mat-card-actions align="end">
       <div class="margin-right-s">
-        <button mat-mini-fab disabled="true">
+        <button mat-mini-fab [disabled]="table.creatorId != playerId" (click)="deleteTable(table.id)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

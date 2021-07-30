@@ -20,6 +20,7 @@ export class TableListComponent implements OnInit, OnDestroy {
 
   public tables$: Observable<Table[]> = of([]);
   public players$: Observable<Player[]> = of([]);
+  public myPlayerId: string = "";
 
   constructor(
     private tableService: TableService,
@@ -32,6 +33,7 @@ export class TableListComponent implements OnInit, OnDestroy {
     this.playerService.init();
     this.tables$ = this.tableService.tables$;
     this.players$ = this.playerService.players$;
+    this.myPlayerId = this.playerService.whoami;
   }
 
   ngOnDestroy(): void {

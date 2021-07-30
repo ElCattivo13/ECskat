@@ -12,7 +12,8 @@
 import { Player } from './player';
 
 
-export interface PlayerResponse { 
+export interface PlayerResponse {
+    success?: boolean;
     players?: Array<Player>;
     status?: string;
 }

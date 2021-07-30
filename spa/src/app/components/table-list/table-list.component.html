@@ -1,6 +1,6 @@
 <h3>{{ 'table-list.header.table' | translate }}</h3>
 <ng-container *ngFor="let table of (tables$ | async)">
-  <ecs-table-card [table]="table"></ecs-table-card>
+  <ecs-table-card [table]="table" [playerId]="myPlayerId"></ecs-table-card>
 </ng-container>
 <div class="margin-s no-tables-msg" *ngIf="(tables$ | async)?.length == 0">
   {{ 'table-list.noTables.msg' | translate }}
