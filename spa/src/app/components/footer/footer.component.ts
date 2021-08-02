@@ -12,7 +12,6 @@ import { Observable, of } from "rxjs";
 export class FooterComponent implements OnInit {
 
   public lang = "";
-  public joinedTable$: Observable<Table | null> = of(null);
 
   constructor(
     private cookieService: CookieService,
@@ -21,7 +20,6 @@ export class FooterComponent implements OnInit {
 
   ngOnInit(): void {
     this.lang = this.cookieService.get('ecs-language');
-    this.joinedTable$ = this.tableService.joinedTable$;
   }
 
 }

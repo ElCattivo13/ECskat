@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, map } from "rxjs/operators";
 import { SideNavService } from "../../services/side-nav.service"
 import { TableService } from "../../services/table.service";
+import { PlayerService } from "../../services/player.service";
 import { Table } from "../../modules/api/model/models";
+import { isPlayerAtTable } from "../../utils/table.utils";
 
 @Component({
   selector: 'ecs-table',
@@ -15,15 +17,24 @@ export class TableComponent implements OnInit, OnDestroy {
   private destroyed$: ReplaySubject<void> = new ReplaySubject<void>(1);
 
   public isSideNavOpen = false;
-  public table: Table | null = null;
+  public table: Table | undefined = undefined;
+  private playerId = "";
 
-  constructor(private sideNavService: SideNavService, private tableService: TableService) { }
+  constructor(
+    private sideNavService: SideNavService,
+    private tableService: TableService,
+    private playerService: PlayerService
+  ){}
 
   ngOnInit(): void {
+    this.playerId = this.playerService.whoami;
     this.tableService.init();
-    this.tableService.joinedTable$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(table => this.table = table);
+    this.tableService.tables$
+      .pipe(
+        takeUntil(this.destroyed$),
+	map((tables: Table[]) => tables.find((t: Table) => isPlayerAtTable(t, this.playerId)))
+      )
+      .subscribe((table: Table | undefined) => this.table = table);
     this.sideNavService.isSideNavOpen$
       .pipe(takeUntil(this.destroyed$))
       .subscribe(open => this.isSideNavOpen = open);

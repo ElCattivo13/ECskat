@@ -1,9 +1,9 @@
 <div>
   <mat-card class="margin-s tischkarte">
-    <span>{{ table?.name }}</span>
+	  <span>{{ table.name }}</span>
     <mat-card-actions align="end">
       <div class="margin-right-s">
-        <button mat-mini-fab [disabled]="(table.creatorId != playerId) || table.spieler?.length > 0" (click)="deleteTable(table.id)">
+        <button mat-mini-fab [disabled]="(table?.creatorId != playerId) || !!table?.spieler?.length" (click)="deleteTable(table.id)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

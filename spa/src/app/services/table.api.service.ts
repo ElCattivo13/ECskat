@@ -17,7 +17,7 @@ export class TableApiService {
   ];
   private i = 0;
   
-  constructor(private apiService: ApiService, private playerApiService) { }
+  constructor(private apiService: ApiService, private playerApiService: PlayerApiService) { }
   
   get tableResponse(): Observable<TableResponse> {
      return of({
@@ -50,7 +50,7 @@ export class TableApiService {
     const table = this.tables.find(t => t.id == tableId);
     const player = this.playerApiService.players.find(p => p.id == playerId);
     if (table && player) {
-      table.spieler.push(player);
+      table.spieler?.push(player);
     }
     return this.tableResponse;
   }
@@ -58,9 +58,9 @@ export class TableApiService {
   public leaveTable(tableId: string, playerId: string): Observable < TableResponse > {
       const table = this.tables.find(t => t.id == tableId);
       if (table) {
-        const i = table.spieler.findIndex(p => p.id == playerId);
-        if (i >= 0) {
-          table.spieler.splice(i, 1);
+        const i = table.spieler?.findIndex(p => p.id == playerId);
+        if (i != undefined && i >= 0) {
+          table.spieler?.splice(i, 1);
         }
       }
       return this.tableResponse;

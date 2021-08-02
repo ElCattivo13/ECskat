@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Table } from "../../modules/api/model/models";
 import { TableService } from "../../services/table.service";
 import { ReplaySubject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { takeUntil, map } from "rxjs/operators";
 import { SideNavService } from "../../services/side-nav.service";
 
 @Component({
@@ -27,15 +27,15 @@ export class TableCardComponent implements OnInit, OnDestroy {
     this.tableService.tables$
       .pipe(
         takeUntil(this.destroyed$),
-        map(tables => [
-          !!tables.find(t => t.id = this.table.id)?.spieler.find(p => p.id == this.playerId),
-          !!tables.flatMap(t => t.spieler).find(p => p.id == this.playerId)
-        ])
+        map(tables => ({
+          joinedThis: !!tables.find(t => t.id == this.table.id)?.spieler?.find(p => p.id == this.playerId),
+          joinedAny: !!tables.flatMap(t => t.spieler).find(p => p?.id == this.playerId)
+	}))
       )
-      .subscribe(([j1, j2]) => {
-        this.joinedThis = j1;
-        this.joinedAny = j2;
-      });
+      .subscribe((j: {joinedThis: boolean, joinedAny:boolean}) => {
+        this.joinedThis = j.joinedThis;
+        this.joinedAny = j.joinedAny;
+     });
   }
 
   ngOnDestroy(): void {
@@ -45,10 +45,10 @@ export class TableCardComponent implements OnInit, OnDestroy {
 
   public joinTable(join: boolean): void {
     if (join) {
-      this.tableService.joinTable(this.table.id, this.playerId);
+      this.tableService.joinTable(this.table.id || '', this.playerId);
       this.sideNavService.close();
     } else {
-      this.tableService.leaveTable(this.table.id, this.playerId);
+      this.tableService.leaveTable(this.table.id || '', this.playerId);
     }
   }
   

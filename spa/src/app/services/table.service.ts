@@ -48,7 +48,7 @@ export class TableService {
   
   public leaveTable(tableId: string, playerId: string): void {
     this.processTableResponse(
-      this.apiService.leaveTable(table, playerId),
+      this.apiService.leaveTable(tableId, playerId),
       'Error while leaving table');
   }
   
