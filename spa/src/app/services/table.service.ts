@@ -11,11 +11,10 @@ export class TableService {
   private initialized = false;
 
   private tables: ReplaySubject<Table[]> = new ReplaySubject<Table[]>(1);
-  private joinedTable: BehaviorSubject<Table | null> = new BehaviorSubject<Table | null>(null);
 
   constructor(private apiService: TableApiService) { }
   
-  init() {
+  public init(): void {
     if (!this.initialized) {
       this.initialized = true;
       
@@ -28,22 +27,31 @@ export class TableService {
   get tables$(): Observable<Table[]> {
     return this.tables.asObservable();
   }
-
-  get joinedTable$(): Observable<Table | null> {
-    return this.joinedTable.asObservable();
-  }
   
-  public addTable(tableName: string) {
+  public addTable(tableName: string): void {
     this.processTableResponse(
       this.apiService.addTable(tableName),
       'Error while adding table');
   }
   
-  public deleteTable(tableId: string) {
+  public deleteTable(tableId: string): void {
     this.processTableResponse(
       this.apiService.deleteTable(tableId),
       'Error while adding table');
   }
+  
+  public joinTable(tableId: string, playerId: string): void {
+    this.processTableResponse(
+      this.apiService.joinTable(tableId, playerId),
+      'Error while joining table');
+  }
+  
+  public leaveTable(tableId: string, playerId: string): void {
+    this.processTableResponse(
+      this.apiService.leaveTable(table, playerId),
+      'Error while leaving table');
+  }
+  
   
   private processTableResponse(response$: Observable<TableResponse>, errorMsg: string): void {
     response$.subscribe(
@@ -63,13 +71,5 @@ export class TableService {
         // TODO proper error handling
         console.error(error);
       });
-  }
-
-  public joinTable(table: Table): void {
-    this.joinedTable.next(table);
-  }
-
-  public leaveTable(): void {
-    this.joinedTable.next(null);
   }
 }

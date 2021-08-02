@@ -3,12 +3,12 @@
     <span>{{ table?.name }}</span>
     <mat-card-actions align="end">
       <div class="margin-right-s">
-        <button mat-mini-fab [disabled]="table.creatorId != playerId" (click)="deleteTable(table.id)">
+        <button mat-mini-fab [disabled]="(table.creatorId != playerId) || table.spieler?.length > 0" (click)="deleteTable(table.id)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
-      <button mat-mini-fab [disabled]="joinedTableId && joinedTableId != table.id" (click)="joinTable(joinedTableId)">
-        <mat-icon [ngClass]="{ 'rotate180': table.id === joinedTableId}">input</mat-icon>
+      <button mat-mini-fab [disabled]="joinedAny && !joinedThis" (click)="joinTable(!joinedThis)">
+        <mat-icon [ngClass]="{ 'rotate180': joinedThis}">input</mat-icon>
       </button>
     </mat-card-actions>
   </mat-card>

@@ -1,12 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from "rxjs";
 import { DefaultService as ApiService } from "../modules/api/api/default.service";
-import { PlayerResponse } from "../modules/api/model/models";
+import { Player, PlayerResponse } from "../modules/api/model/models";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerApiService {
+
+  public players: Player[] = [
+    { id: "1", name: "ElCattivo" },
+    { id: "2", name: "Schorch" },
+    { id: "3", name: "Kallamahusch" },
+    { id: "4", name: "RainerApfelsaft" }
+  ];
 
   constructor(private api: ApiService) { }
   
@@ -14,12 +21,7 @@ export class PlayerApiService {
     // TODO actaully call backend
     return of({
       success: true,
-      players: [
-        {id: "1", name: "ElCattivo"},
-        {id: "2", name: "Schorch"},
-        {id: "3", name: "Kallamahusch"},
-        {id: "4", name: "RainerApfelsaft"}
-      ]
+      players: this.players
     });
   }
 }

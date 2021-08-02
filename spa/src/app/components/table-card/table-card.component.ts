@@ -14,7 +14,8 @@ export class TableCardComponent implements OnInit, OnDestroy {
 
   @Input() public table!: Table;
   @Input() public playerId!: string;
-  public joinedTableId: string | undefined = "";
+  public joinedThis = false;
+  public joinedAny = false;
   private destroyed$: ReplaySubject<void> = new ReplaySubject<void>(1);
 
   constructor(
@@ -23,9 +24,18 @@ export class TableCardComponent implements OnInit, OnDestroy {
   ){}
 
   ngOnInit(): void {
-    this.tableService.joinedTable$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(t => this.joinedTableId = t?.id);
+    this.tableService.tables$
+      .pipe(
+        takeUntil(this.destroyed$),
+        map(tables => [
+          !!tables.find(t => t.id = this.table.id)?.spieler.find(p => p.id == this.playerId),
+          !!tables.flatMap(t => t.spieler).find(p => p.id == this.playerId)
+        ])
+      )
+      .subscribe(([j1, j2]) => {
+        this.joinedThis = j1;
+        this.joinedAny = j2;
+      });
   }
 
   ngOnDestroy(): void {
@@ -33,12 +43,12 @@ export class TableCardComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  public joinTable(id: string | undefined): void {
-    if (id && (id === this.table.id)) {
-      this.tableService.leaveTable();
-    } else {
-      this.tableService.joinTable(this.table);
+  public joinTable(join: boolean): void {
+    if (join) {
+      this.tableService.joinTable(this.table.id, this.playerId);
       this.sideNavService.close();
+    } else {
+      this.tableService.leaveTable(this.table.id, this.playerId);
     }
   }
   
