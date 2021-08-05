@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, TemplateRef } from '@angular/core';
 import { Table } from "../../modules/api/model/models";
 import { TableService } from "../../services/table.service";
 import { ReplaySubject } from "rxjs";
 import { takeUntil, map } from "rxjs/operators";
 import { SideNavService } from "../../services/side-nav.service";
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'ecs-table-card',
@@ -12,6 +13,7 @@ import { SideNavService } from "../../services/side-nav.service";
 })
 export class TableCardComponent implements OnInit, OnDestroy {
 
+  @ViewChild('deleteTableDialog') deleteTableDialogTemplateRef: TemplateRef;
   @Input() public table!: Table;
   @Input() public playerId!: string;
   public joinedThis = false;
@@ -20,7 +22,8 @@ export class TableCardComponent implements OnInit, OnDestroy {
 
   constructor(
     private tableService: TableService,
-    private sideNavService: SideNavService
+    private sideNavService: SideNavService,
+    private matDialog: MatDialog
   ){}
 
   ngOnInit(): void {
@@ -54,7 +57,13 @@ export class TableCardComponent implements OnInit, OnDestroy {
   
   public deleteTable(tableId: string | undefined): void {
     if (tableId) {
-      this.tableService.deleteTable(tableId);
+      const deleteTableDialog = this.matDialog.open(this.deleteTableDialogTemplateRef);
+      deleteTableDialog.afterClosed().subscribe(result => {
+        if (result) {
+          this.tableService.deleteTable(tableId);
+        }
+      });
+     
     }
   }
 

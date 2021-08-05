@@ -29,6 +29,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CookieService } from 'ngx-cookie-service';
 import { AddTableDialogComponent } from './components/add-table-dialog/add-table-dialog.component';
 import { PlayerCardComponent } from './components/player-card/player-card.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -71,7 +73,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatDividerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatMenuModule
+    MatMenuModule,
+    DragDropModule
   ],
   providers: [ CookieService ],
   bootstrap: [AppComponent]
