@@ -14,10 +14,26 @@
 }
 
 .karte {
+  width: 30px;
+  height: 100px;
+  transform-origin: 45px 70px;
+}
+
+.karte > img {
+  width: 90px;
+}
+
+.kartenliste {
   position: absolute;
   bottom: 0;
-  left: 100px;
-  width: 100px;
-  height: 100px;
-  background-color: red;
+  left: -60px;
+  width: calc(100% + 60px);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
 }

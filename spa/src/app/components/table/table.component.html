@@ -14,7 +14,21 @@
     <div *ngIf="table">
       <p>table works!</p>
       <p>{{ table | json }}</p>
-      <div class="karte" cdkDrag></div>
+      <div cdkDropList
+           cdkDropListSortingDisabled
+	   cdkDropListOrientation="horizontal"
+	   class="kartenliste"
+	   (cdkDropListDropped)="kartenlisteDrop($event)">
+        <div class="karte"
+             *ngFor="let karte of karten;let i=index;let l=count"
+             [ngStyle]="{ 'transform': kartenlisteTransform(i, l) }"
+             cdkDrag>
+          <img [src]="'assets/card-img/' + karte.farbe + '/' + karte.blatt + '.svg'" [alt]="karte.farbe + ' ' + karte.blatt">
+	</div>
+      </div>
+      <!-- <div class="karte A" cdkDrag></div> -->
+      <!-- <div class="karte B" cdkDrag></div> -->
+      <!-- <div class="karte C" cdkDrag></div> -->
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

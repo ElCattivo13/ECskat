@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { Table } from "../../modules/api/model/models";
 import { TableService } from "../../services/table.service";
 import { ReplaySubject } from "rxjs";
@@ -13,7 +13,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class TableCardComponent implements OnInit, OnDestroy {
 
-  @ViewChild('deleteTableDialog') deleteTableDialogTemplateRef: TemplateRef;
+  @ViewChild('deleteTableDialog') deleteTableDialogTemplateRef!: TemplateRef<any>;
   @Input() public table!: Table;
   @Input() public playerId!: string;
   public joinedThis = false;
