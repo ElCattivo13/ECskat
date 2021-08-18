@@ -7,6 +7,7 @@ import { PlayerService } from "../../services/player.service";
 import { Blatt, Card, Farbe, Table } from "../../modules/api/model/models";
 import { isPlayerAtTable } from "../../utils/table.utils";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import cardImages from "../../../assets/card-img/cards.json";
 
 @Component({
   selector: 'ecs-table',
@@ -20,6 +21,7 @@ export class TableComponent implements OnInit, OnDestroy {
   public isSideNavOpen = false;
   public table: Table | undefined = undefined;
   private playerId = "";
+  public cardImages = cardImages;
 
   public karten: Card[] = [
     {blatt: Blatt.Koenig, farbe: Farbe.Gruen},

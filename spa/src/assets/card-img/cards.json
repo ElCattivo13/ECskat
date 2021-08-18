@@ -1,0 +1,42 @@
+{
+  "EICHEL": {
+    "SIEBEN": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Playing_card-german-eichel-07.svg",
+    "ACHT": "https://upload.wikimedia.org/wikipedia/commons/2/28/Playing_card-german-eichel-08.svg",
+    "NEUN": "https://upload.wikimedia.org/wikipedia/commons/0/06/Playing_card-german-eichel-09.svg",
+    "ZEHN": "https://upload.wikimedia.org/wikipedia/commons/d/db/Playing_card-german-eichel-10.svg",
+    "UNTER": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Playing_card-german-eichel-11_unter.svg",
+    "OBER": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Playing_card-german-eichel-12_ober.svg",
+    "KOENIG": "https://upload.wikimedia.org/wikipedia/commons/7/72/Playing_card-german-eichel-13_konig.svg",
+    "ASS": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Playing_card-german-eichel-01_daus.svg"
+  },
+  "GRUEN": {
+    "SIEBEN": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Playing_card-german-blatt-07.svg",
+    "ACHT": "https://upload.wikimedia.org/wikipedia/commons/7/75/Playing_card-german-blatt-08.svg",
+    "NEUN": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Playing_card-german-blatt-09.svg",
+    "ZEHN": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Playing_card-german-blatt-10.svg",
+    "UNTER": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Playing_card-german-blatt-11_jack.svg",
+    "OBER": "https://upload.wikimedia.org/wikipedia/commons/4/43/Playing_card-german-blatt-12_queen.svg",
+    "KOENIG": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Playing_card-german-blatt-13_king.svg",
+    "ASS": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Playing_card-german-blatt-01_daus.svg"
+  },
+  "HERZ": {
+    "SIEBEN": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Playing_card-german-hart-07.svg",
+    "ACHT": "https://upload.wikimedia.org/wikipedia/commons/6/62/Playing_card-german-hart-08.svg",
+    "NEUN": "https://upload.wikimedia.org/wikipedia/commons/8/86/Playing_card-german-hart-09.svg",
+    "ZEHN": "https://upload.wikimedia.org/wikipedia/commons/3/36/Playing_card-german-hart-10.svg",
+    "UNTER": "https://upload.wikimedia.org/wikipedia/commons/4/45/Playing_card-german-hart-11_unter.svg",
+    "OBER": "https://upload.wikimedia.org/wikipedia/commons/1/10/Playing_card-german-hart-12_ober.svg",
+    "KOENIG": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Playing_card-german-hart-13_konig.svg",
+    "ASS": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Playing_card-german-hart-01_daus.svg"
+  },
+  "SCHELL": {
+    "SIEBEN": "https://upload.wikimedia.org/wikipedia/commons/8/88/Playing_card-german-schellen-07.svg",
+    "ACHT": "https://upload.wikimedia.org/wikipedia/commons/9/95/Playing_card-german-schellen-08.svg",
+    "NEUN": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Playing_card-german-schellen-09.svg",
+    "ZEHN": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Playing_card-german-schellen-10.svg",
+    "UNTER": "https://upload.wikimedia.org/wikipedia/commons/8/89/Playing_card-german-schellen-11_jack.svg",
+    "OBER": "https://upload.wikimedia.org/wikipedia/commons/3/39/Playing_card-german-schellen-12_queen.svg",
+    "KOENIG": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Playing_card-german-schellen-13_king.svg",
+    "ASS": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Playing_card-german-schellen-01.svg"
+  }
+}

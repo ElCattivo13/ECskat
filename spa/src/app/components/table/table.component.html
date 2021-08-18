@@ -15,15 +15,16 @@
       <p>{{ table | json }}</p>
       <div cdkDropList
            cdkDropListSortingDisabled
-	   cdkDropListOrientation="horizontal"
-	   class="kartenliste"
-	   (cdkDropListDropped)="kartenlisteDrop($event)">
+           cdkDropListOrientation="horizontal"
+           class="kartenliste"
+           (cdkDropListDropped)="kartenlisteDrop($event)">
         <div class="karte"
              *ngFor="let karte of karten;let i=index;let l=count"
              [ngStyle]="{ 'transform': kartenlisteTransform(i, l) }"
              cdkDrag>
-		<!-- <img [src]="'assets/card-img/' + karte.farbe + '/' + karte.blatt + '.svg'" [alt]="karte.farbe + ' ' + karte.blatt"> -->
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Playing_card-german-blatt-13_king.svg">
+          <!-- <img [src]="'assets/card-img/' + karte.farbe + '/' + karte.blatt + '.svg'" [alt]="karte.farbe + ' ' + karte.blatt"> -->
+          <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Playing_card-german-blatt-13_king.svg"> -->
+          <img [src]="cardImages[karte.farbe][karte.blatt]" [alt]="karte.farbe + ' ' + karte.blatt">
 	</div>
       </div>
     </div>
