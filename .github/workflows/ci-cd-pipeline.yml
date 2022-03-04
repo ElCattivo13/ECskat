@@ -32,7 +32,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup gcloud CLI
-      uses: google-github-actions/setup-gcloud@master
+      uses: google-github-actions/setup-gcloud@v0
       with:
         service_account_key: ${{ secrets.GCR_SA_KEY }}
         project_id: ${{ secrets.GCR_PROJECT }}
